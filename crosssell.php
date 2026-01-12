@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * crosssell.php:
  * Adverts from one site to another site.
@@ -62,19 +62,19 @@ function crosssell_display_twfy_alerts_advert($this_site, $email, $postcode) {
 
 <h2 style="border-top: solid 3px #9999ff; font-weight: normal; padding-top: 1em; font-size: 150%">Seeing as you're interested in your MP, would you also like to be emailed when they say something in parliament?</h2>
 <form style="text-align: center" action="http://www.theyworkforyou.com/alert/">
-    <strong>Your email:</strong> <input type="text" name="email" value="<?=$email ?>" maxlength="100" size="30">
-    <input type="hidden" name="pid" value="<?=$person_id?>">            
+    <strong>Your email:</strong> <input type="text" name="email" value="<?php echo $email; ?>" maxlength="100" size="30">
+    <input type="hidden" name="pid" value="<?php echo $person_id; ?>">
     <input type="submit" value="Sign me up!">
     <input type="hidden" name="submitted" value="true">
-    <input type="hidden" name="sign" value="<?=$auth_signature?>">
-    <input type="hidden" name="site" value="<?=$this_site?>">
+    <input type="hidden" name="sign" value="<?php echo $auth_signature; ?>">
+    <input type="hidden" name="site" value="<?php echo $this_site; ?>">
 </form>
 
 <p>Parliament email alerts are a free service of <a href="http://www.theyworkforyou.com">TheyWorkForYou.com</a>,
 another <a href="http://www.mysociety.org">mySociety</a> site. We will treat
 your data with the same diligence as we do on all our sites, and obviously you
 can unsubscribe at any time.
-<?  
+<?php
     return true;
 }
 
