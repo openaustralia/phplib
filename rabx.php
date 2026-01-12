@@ -37,7 +37,9 @@ define("RABX_ERROR_USER", 1024);
  * Simple class to represent an error in RABX.
  */
 class RABX_Error {
-  public $code, $text, $extra;
+  public $code;
+  public $text;
+  public $extra;
 
   /**
    *
@@ -48,32 +50,37 @@ class RABX_Error {
     $this->extra = $extra;
   }
 
-};
+}
 
 /**
  *
  */
-class RABX_Error_Unknown extends RABX_Error {};
+class RABX_Error_Unknown extends RABX_Error {
+}
 
 /**
  *
  */
-class RABX_Error_Interface extends RABX_Error {};
+class RABX_Error_Interface extends RABX_Error {
+}
 
 /**
  *
  */
-class RABX_Error_Transport extends RABX_Error {};
+class RABX_Error_Transport extends RABX_Error {
+}
 
 /**
  *
  */
-class RABX_Error_Protocol extends RABX_Error {};
+class RABX_Error_Protocol extends RABX_Error {
+}
 
 /**
  *
  */
-class RABX_Error_User extends RABX_Error {};
+class RABX_Error_User extends RABX_Error {
+}
 
 /**
  * rabx_error CODE TEXT [EXTRA]
@@ -417,7 +424,9 @@ function microtime_float() {
  *
  */
 class RABX_Client {
-  public $ch, $url, $use_post = FALSE;
+  public $ch = FALSE;
+  public $url = FALSE;
+  public $use_post = FALSE;
   public $lastt;
 
   /**
