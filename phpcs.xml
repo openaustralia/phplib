@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="oaf">
+  <rule ref="./vendor/drupal/coder/coder_sniffer/Drupal" />
+
+  <description>Basic PHP CodeSniffer configuration for OAF, Drupal rules.</description>
+  <arg name="basepath" value="."/>
+  <arg name="colors"/>
+  <arg name="parallel" value="75"/>
+  <arg value="np"/>
+  <arg name="extensions" value="php"/>
+  <arg name="encoding" value="UTF-8"/>
+
+  <!-- Disable a few sniffs. -->
+  <rule ref="Drupal">
+    <exclude name="Drupal.Arrays.Array"/>
+    <exclude name="Drupal.Commenting.DocComment"/>
+    <exclude name="Drupal.NamingConventions.ValidGlobal"/>
+    <exclude name="Drupal.NamingConventions.ValidVariableName"/>
+  </rule>
+
+  <!--Exclude third party code.-->
+  <exclude-pattern>./vendor/*</exclude-pattern>
+
+  <!-- Exclude third part stuff for now -->
+  <exclude-pattern>./facebookphp4/*</exclude-pattern>
+  <exclude-pattern>./simplexml44-0_4_4/*</exclude-pattern>
+  <exclude-pattern>./sparkline/*</exclude-pattern>
+</ruleset>
