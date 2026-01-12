@@ -1,12 +1,14 @@
 <?php
-/*
+
+/**
+ * @file
  * Infrastructure for administration pages.
- * 
+ *
  * Copyright (c) 2004 UK Citizens Online Democracy. All rights reserved.
  * Email: francis@mysociety.org. WWW: http://www.mysociety.org
  *
  * $Id: admin.php,v 1.38 2006/12/19 15:03:35 francis Exp $
- * 
+ *
  */
 
 require_once "utility.php";
@@ -15,73 +17,87 @@ require_once "HTML/QuickForm.php";
 require_once "HTML/QuickForm/Rule.php";
 require_once "HTML/QuickForm/Renderer/Default.php";
 
-// Error display
+// Error display.
 require_once "../../phplib/error.php";
+
+/**
+ *
+ */
 function admin_display_error($num, $message, $file, $line, $context) {
-    print "<p><strong>$message</strong> in $file:$line</p>";
+  print "<p><strong>$message</strong> in $file:$line</p>";
 }
+
 err_set_handler_display('admin_display_error');
 
-function admin_page_display($site_name, $pages, $default = null) {
-    $maintitle = "$site_name admin";
-    if (get_http_var("page"))  {
-        // find page
-        $id = get_http_var("page");
-        foreach ($pages as $page) {
-            if (isset($page) && $page->id == $id) {
-                break;
-            }
-        } 
-        // display
-        ob_start();
-        if (isset($page->contenttype)) {
-            header($page->contenttype);
-        } else {
-            header("Content-Type: text/html; charset=utf-8");
-            $title = $page->navname . " - $maintitle";
-            admin_html_header($title);
-            print "<h1>$title</h1>";
-        }
-        $self_link = "?page=$id";
-        $page->self_link = $self_link;
-        $page->display($self_link); # TODO remove this as parameter, use class member
-        if (!isset($page->contenttype)) {
-            admin_html_footer();
-        }
-    } else {
-        header("Content-Type: text/html; charset=utf-8");
-        admin_html_header($maintitle);
-        print '<h3>' . $site_name . '</h3>';
-        if (!is_null($default)) {
-            $default->display();
-        }
+/**
+ *
+ */
+function admin_page_display($site_name, $pages, $default = NULL) {
+  $maintitle = "$site_name admin";
+  if (get_http_var("page")) {
+    // Find page.
+    $id = get_http_var("page");
+    foreach ($pages as $page) {
+      if (isset($page) && $page->id == $id) {
+        break;
+      }
+    }
+    // Display.
+    ob_start();
+    if (isset($page->contenttype)) {
+      header($page->contenttype);
+    }
+    else {
+      header("Content-Type: text/html; charset=utf-8");
+      $title = $page->navname . " - $maintitle";
+      admin_html_header($title);
+      print "<h1>$title</h1>";
+    }
+    $self_link = "?page=$id";
+    $page->self_link = $self_link;
+    // TODO remove this as parameter, use class member.
+    $page->display($self_link);
+    if (!isset($page->contenttype)) {
+      admin_html_footer();
+    }
+  }
+  else {
+    header("Content-Type: text/html; charset=utf-8");
+    admin_html_header($maintitle);
+    print '<h3>' . $site_name . '</h3>';
+    if (!is_null($default)) {
+      $default->display();
+    }
 
-        // generate navigation bar
-        $navlinks = "<ul>";
-        foreach ($pages as $page) {
-            if (isset($page)) {
-                if (isset($page->url)) {
-                    $navlinks .= "<li><a href=\"". $page->url."\">" . $page->navname. "</a>";
-                } else {
-                    $navlinks .= "<li><a href=\"?page=". $page->id."\">" . $page->navname. "</a>";
-                }
-            } else {
-                $navlinks .= '</ul> <ul>';
-            }
+    // Generate navigation bar.
+    $navlinks = "<ul>";
+    foreach ($pages as $page) {
+      if (isset($page)) {
+        if (isset($page->url)) {
+          $navlinks .= "<li><a href=\"" . $page->url . "\">" . $page->navname . "</a>";
         }
-        $navlinks .= '</ul>';
-        print $navlinks;
-?>
+        else {
+          $navlinks .= "<li><a href=\"?page=" . $page->id . "\">" . $page->navname . "</a>";
+        }
+      }
+      else {
+        $navlinks .= '</ul> <ul>';
+      }
+    }
+    $navlinks .= '</ul>';
+    print $navlinks;
+    ?>
 <p><a href="http://www.mysociety.org/"><img class="mslogo" src="https://secure.mysociety.org/mysociety_sm.gif" border="0" alt="mySociety"></a></p>
-<?php
-        admin_html_footer();
-    } 
+    <?php
+    admin_html_footer();
+  }
 }
 
-
-// Header at start of page
+/**
+ * Header at start of page.
+ */
 function admin_html_header($title) {
-?>
+  ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -121,51 +137,56 @@ img.creatorpicture { float: left; display: inline; margin-right: 10px; }
 <title><?php echo $title; ?></title>
 </head>
 <body>
-<?php
+  <?php
 }
 
-// Footer at bottom
+/**
+ * Footer at bottom.
+ */
 function admin_html_footer() {
-?>
+  ?>
 </body>
 </html>
-<?php
+  <?php
 }
 
-// Set colours and details of rendering here
+/**
+ * Set colours and details of rendering here.
+ */
 function admin_render_form($form) {
-    //$form->display();
-    //return;
-    $renderer =& $form->defaultRenderer();
+  // $form->display();
+  // return;
+  $renderer =& $form->defaultRenderer();
 
-    $form->setRequiredNote('<font color="#FF0000">*</font> shows the required fields.');
-    $form->setJsWarnings('Those fields have errors :', 'Thanks for correcting them.');
+  $form->setRequiredNote('<font color="#FF0000">*</font> shows the required fields.');
+  $form->setJsWarnings('Those fields have errors :', 'Thanks for correcting them.');
 
-    $renderer->setFormTemplate('<table width="100%" border="0" cellpadding="3" cellspacing="2" bgcolor="#CCCC99"><form{attributes}>{content}</form></table>');
-    $renderer->setHeaderTemplate('<tr><td style="white-space:nowrap;background:#996;color:#ffc;" align="left" colspan="2"><b>{header}</b></td></tr>');
+  $renderer->setFormTemplate('<table width="100%" border="0" cellpadding="3" cellspacing="2" bgcolor="#CCCC99"><form{attributes}>{content}</form></table>');
+  $renderer->setHeaderTemplate('<tr><td style="white-space:nowrap;background:#996;color:#ffc;" align="left" colspan="2"><b>{header}</b></td></tr>');
 
-// Use for labels on specific groups:
-//    $renderer->setGroupTemplate('<table><tr>{content}</tr></table>', ***);
-//    $renderer->setGroupElementTemplate('<td>{element}<br /><span style="font-size:10px;"><!-- BEGIN required --><span style="color: #f00">*</span><!-- END required --><span style="color:#996;">{label}</span></span></td>', ***);
+  // Use for labels on specific groups:
+  //    $renderer->setGroupTemplate('<table><tr>{content}</tr></table>', ***);
+  //    $renderer->setGroupElementTemplate('<td>{element}<br /><span style="font-size:10px;"><!-- BEGIN required --><span style="color: #f00">*</span><!-- END required --><span style="color:#996;">{label}</span></span></td>', ***);.
 
-    $form->accept($renderer);
-    echo $renderer->toHtml();
+  $form->accept($renderer);
+  echo $renderer->toHtml();
 }
 
+/**
+ *
+ */
 function make_ids_links($text) {
-    $text = htmlspecialchars($text);
-    // Message ids e.g. 0361593135850d75745e
-    $text = preg_replace("/([a-f0-9]{20})/",
+  $text = htmlspecialchars($text);
+  // Message ids e.g. 0361593135850d75745e.
+  $text = preg_replace("/([a-f0-9]{20})/",
             "<a href=\"?page=fyrqueue&id=\$1\">\$1</a>",
             $text);
-    // Ratty rules e.g. rule #10
-    $text = preg_replace("/rule #([0-9]+)/",
+  // Ratty rules e.g. rule #10.
+  $text = preg_replace("/rule #([0-9]+)/",
             "<a href=\"?page=ratty-fyr-abuse&action=editrule&rule_id=\$1\">rule #\$1</a>",
             $text);
-    $text = preg_replace('#Ticket (\d+)#i',
+  $text = preg_replace('#Ticket (\d+)#i',
             '<a href="https://secure.mysociety.org/rt/Ticket/Display.html?id=$1">Ticket $1</a>',
-	    $text);
-    return $text;
+        $text);
+  return $text;
 }
-
-?>
