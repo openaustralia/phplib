@@ -51,7 +51,7 @@ if (defined('OPTION_EVEL_URL'))
   * _template_, _parameters_
 
     Templated body text and an associative array of template parameters.
-    _template contains optional substititutions <?=$values['name']?>, each
+    _template contains optional substititutions <?php echo $values['name']?>, each
     of which is replaced by the value of the corresponding named value in
     _parameters_. It is an error to use a substitution when the
     corresponding parameter is not present or undefined. The first line of

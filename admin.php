@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * Infrastructure for administration pages.
  * 
@@ -73,7 +73,7 @@ function admin_page_display($site_name, $pages, $default = null) {
         print $navlinks;
 ?>
 <p><a href="http://www.mysociety.org/"><img class="mslogo" src="https://secure.mysociety.org/mysociety_sm.gif" border="0" alt="mySociety"></a></p>
-<?
+<?php
         admin_html_footer();
     } 
 }
@@ -118,10 +118,10 @@ img.creatorpicture { float: left; display: inline; margin-right: 10px; }
 #pledge { border: solid 2px #522994; background-color: #f6e5ff; margin-bottom: 1em; margin-left: 1em; padding: 10px; text-align: center; width: 30%; float: right; margin: 1em auto; }
 //--></style>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title><?=$title?></title>
+<title><?php echo $title; ?></title>
 </head>
 <body>
-<?
+<?php
 }
 
 // Footer at bottom
@@ -129,7 +129,7 @@ function admin_html_footer() {
 ?>
 </body>
 </html>
-<?
+<?php
 }
 
 // Set colours and details of rendering here
