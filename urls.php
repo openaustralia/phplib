@@ -85,7 +85,7 @@ function url_new($page, $retain) {
         $keyvalpairs[] = urlencode($key) . '=' . urlencode($val);
       }
     }
-    $url .= '?' . join('&', $keyvalpairs);
+    $url .= '?' . implode('&', $keyvalpairs);
   }
 
   return $url;

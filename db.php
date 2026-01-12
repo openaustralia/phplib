@@ -374,7 +374,7 @@ function db_get_locks() {
   // , $dbname.
     );
   while ($row = db_fetch_row($q)) {
-    $ret .= join(",", $row) . "\n";
+    $ret .= implode(",", $row) . "\n";
   }
   return $ret;
 }

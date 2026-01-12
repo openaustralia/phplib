@@ -122,7 +122,7 @@ function datetime_parse_local_date($date, $now, $language, $country) {
   $search = [];
   $replace = [];
   foreach ($translate as $english => $foreign) {
-    $search[] = '/(?:^|\s)(' . join('|', $foreign) . ')(?:\s|$)/';
+    $search[] = '/(?:^|\s)(' . implode('|', $foreign) . ')(?:\s|$)/';
     $replace[] = $english;
   }
   $date = preg_replace($search, $replace, $date);
