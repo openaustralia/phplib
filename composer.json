@@ -9,8 +9,7 @@
     },
     "scripts": {
       "git-hooks": "test -d .git && git config core.hooksPath git-hooks || exit 0",
-      "phpcs": "./vendor/bin/phpcs --standard=phpcs.xml .",
-      "phpcbf": "./vendor/bin/phpcbf --standard=phpcs.xml .",
+      "phpcs": "./vendor/bin/phpcs --standard=phpcs.xml --report=json --report-file=phpcs-report.json .",
       "post-install-cmd": [
           "@git-hooks"
       ],
