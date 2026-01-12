@@ -78,13 +78,13 @@ $share_sites = array(
 function share_form($url, $title, $email_url, $name, $email) {
 ?>
 <div id="share_form">
-<a href="#" onclick="$('#share_form').hide(); return false" class="share_close"><?=_('Close') ?></a>
+<a href="#" onclick="$('#share_form').hide(); return false" class="share_close"><?php echo _('Close'); ?></a>
 <ul class="share_tabs">
-<li id="share_tab1" class="selected" onclick="share_tab('1');"><?=_('Social Web') ?></li>
-<li id="share_tab2" onclick="share_tab('2');"><?=_('Email') ?></li>
+<li id="share_tab1" class="selected" onclick="share_tab('1');"><?php echo _('Social Web'); ?></li>
+<li id="share_tab2" onclick="share_tab('2');"><?php echo _('Email'); ?></li>
 </ul>
 <div class="clear"></div>
-<?
+<?php
     share_form_social($url, $title);
     share_form_email($email_url, $name, $email);
 }
@@ -106,27 +106,27 @@ function share_form_social($url, $title) {
 function share_form_email($url, $name, $email) {
 ?>
 <div id="share_email">
-<form action="<?=$url ?>" method="post">
+<form action="<?php echo $url; ?>" method="post">
 <fieldset>
-<legend><?=_('Email') ?></legend>
+<legend><?php echo _('Email'); ?></legend>
 <ul>
 <li>
-<label><?=_('To: (up to 5 emails)') ?></label>
+<label><?php echo _('To: (up to 5 emails)'); ?></label>
 <input type="text" name="e1" value="" class="share_text">
 </li>
 <li>
-<label><?=_('Your name:') ?></label>
+<label><?php echo _('Your name:'); ?></label>
 <input type="text" name="fromname" value="<?php print(htmlspecialchars($name)); ?>" class="share_text">
 </li>
 <li>
-<label><?=_('Your email:') ?></label>
+<label><?php echo _('Your email:'); ?></label>
 <input type="text" name="fromat" value="<?php print(htmlspecialchars($email)); ?>" class="share_text">
 </li>
-<li><?=_('Add a message, if you want:') ?>
+<li><?php echo _('Add a message, if you want:'); ?>
 
 <textarea name="frommessage" rows="8" cols="40"></textarea>
 <li>
-<input type="submit" name="submit" value="<?=_('Send message') ?>">
+<input type="submit" name="submit" value="<?php echo _('Send message'); ?>">
 </li>
 </ul>
 </fieldset>
