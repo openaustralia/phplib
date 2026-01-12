@@ -54,7 +54,7 @@ class Person {
    * Given a person ID or EMAIL address, return a person object describing
    * their account.
    */
-  public function Person($id) {
+  public function __construct($id) {
     if (preg_match('/@/', $id)) {
       $this->id = db_getOne('select id from person where lower(email) = ? for update', strtolower($email));
     }

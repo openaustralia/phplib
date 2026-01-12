@@ -13,10 +13,16 @@
  */
 class ADMIN_PAGE_EMBED {
 
+  public $id;
+
+  public $navname;
+
+  public $url;
+
   /**
    *
    */
-  public function ADMIN_PAGE_EMBED($id, $navname, $url) {
+  public function __construct($id, $navname, $url) {
     $this->id = $id;
     $this->navname = $navname;
     $this->url = $url;
