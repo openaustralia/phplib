@@ -1,6 +1,6 @@
 {
     "name": "openaustralia/twfy",
-    "description": "Web Application component for Open Australia (twfy module)",
+    "description": "Web Application component for Open Australia (phplib module)",
     "type": "project",
     "license": "BSD-3-Clause",
     "minimum-stability": "stable",
