@@ -1,22 +1,24 @@
 <?php
-/*
+
+/**
+ * @file
  * votingarea.php:
  * Stuff about voting and administrative areas.  "Voting Area" is the
  * terminology we use to mean any geographical region for which an
  * elected representative is returned.
- * 
+ *
  * Copyright (c) 2004 UK Citizens Online Democracy. All rights reserved.
  * Email: chris@mysociety.org; WWW: http://www.mysociety.org
  *
  * $Id: votingarea.php,v 1.49 2008/01/11 17:51:15 matthew Exp $
- * 
+ *
  */
 
 /* va_inside
  * For any constant which refers to a voting area which is inside an
  * administrative area, there is an entry in this array saying which type of
  * area it's inside. */
-$va_inside = array(
+$va_inside = [
         'LBW' => 'LBO',
 
         'LAC' => 'LAS',
@@ -47,7 +49,7 @@ $va_inside = array(
         'HOC' => 'HOL',
 
         'EUR' => 'EUP'
-    );
+    ];
 
 /* $va_parent_types
 Types which are bodies, rather than constituencies/wards within them */
@@ -60,28 +62,28 @@ $va_child_types = array_keys($va_inside);
 /* $va_council_parent_types
 Types which are local councils, such as districts, counties,
 unitary authorities and boroughs. */
-$va_council_parent_types = array('DIS', 'LBO', 'MTD', 'UTA', 'LGD', 'CTY', 'COI');
+$va_council_parent_types = ['DIS', 'LBO', 'MTD', 'UTA', 'LGD', 'CTY', 'COI'];
 
 /* $va_council_child_types
 Types which are wards or electoral divisions in councils. */
-$va_council_child_types = array('DIW', 'LBW', 'MTW', 'UTE', 'UTW', 'LGE', 'CED', 'COP');
+$va_council_child_types = ['DIW', 'LBW', 'MTW', 'UTE', 'UTW', 'LGE', 'CED', 'COP'];
 
 /* $va_aliases
 Names for sets of representative types */
-$va_aliases = array(
+$va_aliases = [
     /* Councillors of whatever sort */
     'council' => $va_council_child_types,
     /* MPs */
-    'westminstermp' => array('WMC'),
+    'westminstermp' => ['WMC'],
     /* Devolved assembly members / MSPs */
-    'regionalmp' => array('SPC','SPE','WAC','WAE','LAC','LAE','NIE'),
+    'regionalmp' => ['SPC', 'SPE', 'WAC', 'WAE', 'LAC', 'LAE', 'NIE'],
     /* MEPs */
-    'mep' => array('EUR')
-);
+    'mep' => ['EUR']
+];
 
 /* $va_precise_names
 Names of each child type. */
-$va_precise_names = array(
+$va_precise_names = [
         'LBW' => 'London Borough Councillors',
 
         'LAC' => 'London Assembly Constituency Members',
@@ -112,7 +114,7 @@ $va_precise_names = array(
         'HOC' => 'Members of the House of Lords',
 
         'EUR' => 'Members of the European Parliament'
-    );
+    ];
 
 
 /* va_display_order
@@ -120,7 +122,7 @@ $va_precise_names = array(
  * where one category of representatives is elected on a constituency and an
  * electoral area, as with top-up lists in the Scottish Parliament, an array of
  * the equivalent types is placed in this array. XXX should this be in FYR? */
-$va_display_order = array(
+$va_display_order = [
         /* District councils */
         'DIW', 'LBW',
         /* unitary-type councils */
@@ -128,18 +130,18 @@ $va_display_order = array(
         /* county council */
         'CED',
         /* various devolved assemblies */
-        array('LAC', 'LAE'),
-        array('WAC', 'WAE'),
-        array('SPC', 'SPE'),
+        ['LAC', 'LAE'],
+        ['WAC', 'WAE'],
+        ['SPC', 'SPE'],
         'NIE',
         /* Westminster Parliament and European Parliament */
         'WMC', 'EUR'
-    );
+    ];
 
 /* va_salaried
  * Array indicating whether representatives at the various levels typically
  * receive a salary for their work. */
-$va_salaried = array(
+$va_salaried = [
         'LBW' => 0,
 
         'LAC' => 1,
@@ -170,65 +172,67 @@ $va_salaried = array(
         'HOL' => 1, /* Although in contrast to MPs, Lords are paid according to attendance */
 
         'EUR' => 1
-    );
+    ];
 
-// If you update this, also update in perllib/mySociety/VotingArea.pm
-$va_type_name = array(
-        'LBO' =>  "London Borough",
-        'LBW' =>  "ward",
+// If you update this, also update in perllib/mySociety/VotingArea.pm.
+$va_type_name = [
+        'LBO' => "London Borough",
+        'LBW' => "ward",
 
-        'GLA' =>  "Greater London Authority",
+        'GLA' => "Greater London Authority",
 
-        'LAS' =>  "London Assembly",
-        'LAC' =>  "constituency",
-        'LAE' =>  "Electoral Region",
+        'LAS' => "London Assembly",
+        'LAC' => "constituency",
+        'LAE' => "Electoral Region",
 
-        'CTY' =>  "County",
-        'CED' =>  "Electoral Division",
+        'CTY' => "County",
+        'CED' => "Electoral Division",
 
-        'DIS' =>  "District",
-        'DIW' =>  "ward",
+        'DIS' => "District",
+        'DIW' => "ward",
 
-        'LGD' =>  "Local Council",
-        'LGE' =>  "Electoral Area",
+        'LGD' => "Local Council",
+        'LGE' => "Electoral Area",
 
-        'UTA' =>  "Unitary Authority",
-        'UTE' =>  "Electoral Division",
-        'UTW' =>  "ward",
+        'UTA' => "Unitary Authority",
+        'UTE' => "Electoral Division",
+        'UTW' => "ward",
 
-        'MTD' =>  "Metropolitan District",
-        'MTW' =>  "ward",
+        'MTD' => "Metropolitan District",
+        'MTW' => "ward",
 
-        'COI' =>  "Council of the Isles",
-        'COP' =>  "parish",
+        'COI' => "Council of the Isles",
+        'COP' => "parish",
 
-        'SPA' =>  "Scottish Parliament",
-        'SPE' =>  "Electoral Region",
-        'SPC' =>  "constituency",
+        'SPA' => "Scottish Parliament",
+        'SPE' => "Electoral Region",
+        'SPC' => "constituency",
 
-        'WAS' =>  "National Assembly for Wales",
-        'WAE' =>  "Electoral Region",
-        'WAC' =>  "constituency",
+        'WAS' => "National Assembly for Wales",
+        'WAE' => "Electoral Region",
+        'WAC' => "constituency",
 
-        'NIA' =>  "Northern Ireland Assembly",
-        'NIE' =>  "constituency", # These are the same as the Westminster
-                                # constituencies but return several members
-                                # using a proportional system. It looks like
-                                # most people just refer to them as
-                                # "constituencies".
-        
-        'WMP' =>  "House of Commons",
-        'WMC' =>  "constituency",
-        'HOL' =>  "House of Lords",
-        'HOC' =>  "constituency",
+        'NIA' => "Northern Ireland Assembly",
+// These are the same as the Westminster.
+        'NIE' => "constituency",
+                                // Constituencies but return several members
+                                // using a proportional system. It looks like
+                                // most people just refer to them as
+                                // "constituencies".
 
-        'EUP' =>  "European Parliament",
-        'EUR' =>  "region",
-    );
+        'WMP' => "House of Commons",
+        'WMC' => "constituency",
+        'HOL' => "House of Lords",
+        'HOC' => "constituency",
 
-$va_rep_name = array(
+        'EUP' => "European Parliament",
+        'EUR' => "region",
+    ];
+
+$va_rep_name = [
     'LBW' => 'councillor',
-    'GLA' => 'Mayor', # "of London"?
+// "of London"?
+    'GLA' => 'Mayor',
     'LAC' => 'London Ascembly Member',
     'LAE' => 'London Assembly Member',
     'CED' => 'county councillor',
@@ -246,11 +250,12 @@ $va_rep_name = array(
     'WMC' => 'MP',
     'HOC' => 'Lord',
     'EUR' => 'MEP',
-);
+];
 
-$va_rep_name_long = array(
+$va_rep_name_long = [
     'LBW' => 'councillor',
-    'GLA' => 'Mayor', # "of London"?
+// "of London"?
+    'GLA' => 'Mayor',
     'LAC' => 'London Assembly Member',
     'LAE' => 'London Assembly Member',
     'CED' => 'county councillor',
@@ -268,11 +273,12 @@ $va_rep_name_long = array(
     'WMC' => 'Member of Parliament',
     'HOC' => 'Member of Parliament',
     'EUR' => 'Member of the European Parliament'
-);
+];
 
-$va_rep_name_plural = array(
+$va_rep_name_plural = [
     'LBW' => 'councillors',
-    'GLA' => 'Mayors', # "of London"?
+// "of London"?
+    'GLA' => 'Mayors',
     'LAC' => 'London Assembly Members',
     'LAE' => 'London Assembly Members',
     'CED' => 'county councillors',
@@ -290,11 +296,12 @@ $va_rep_name_plural = array(
     'WMC' => 'MPs',
     'HOC' => 'Lords',
     'EUR' => 'MEPs'
-);
+];
 
-$va_rep_name_long_plural = array(
+$va_rep_name_long_plural = [
     'LBW' => 'councillors',
-    'GLA' => 'Mayors', # "of London"?
+// "of London"?
+    'GLA' => 'Mayors',
     'LAC' => 'London Assembly Members',
     'LAE' => 'London Assembly Members',
     'CED' => 'county councillors',
@@ -312,9 +319,9 @@ $va_rep_name_long_plural = array(
     'WMC' => 'Members of Parliament',
     'HOC' => 'Members of Parliament',
     'EUR' => 'Members of the European Parliament'
-);
+];
 
-$va_rep_suffix = array(
+$va_rep_suffix = [
     'LAC' => 'AM',
     'LAE' => 'AM',
     'SPE' => 'MSP',
@@ -324,11 +331,12 @@ $va_rep_suffix = array(
     'NIE' => 'MLA',
     'WMC' => 'MP',
     'EUR' => 'MEP'
-);
+];
 
-$va_rep_prefix = array(
+$va_rep_prefix = [
     'LBW' => 'Cllr',
-    'GLA' => 'Mayor', # "of London"?
+// "of London"?
+    'GLA' => 'Mayor',
     'CED' => 'Cllr',
     'DIW' => 'Cllr',
     'UTE' => 'Cllr',
@@ -336,12 +344,12 @@ $va_rep_prefix = array(
     'LGE' => 'Cllr',
     'MTW' => 'Cllr',
     'COP' => 'Cllr',
-);
+];
 
 /* va_responsibility_description
  * Responsibilities of each elected body. XXX should copy these out of
  * Whittaker's Almanac or whatever. */
-$va_responsibility_description = array(
+$va_responsibility_description = [
     'DIS' =>
             "The District Council is responsible for
             <strong>local services</strong>, including <strong>planning</strong>, <strong>council housing</strong>, and
@@ -364,7 +372,7 @@ responsible for all aspects of <strong>local services and policy</strong>, inclu
 <strong>planning</strong>, <strong>transport</strong>,
 <strong>roads</strong> (except trunk roads and motorways), public rights of way,
 <strong>education</strong>, <strong>social services</strong> and <strong>libraries</strong>.",
-    'UTA' => 
+    'UTA' =>
             "The Unitary Authority is
 responsible for all aspects of <strong>local services and policy</strong>, including
 <strong>planning</strong>, <strong>transport</strong>,
@@ -419,17 +427,20 @@ which include <strong>agriculture</strong>, <strong>education</strong>,
 <strong>employment</strong>, the <strong>environment</strong> and
 <strong>health</strong>.
 '
-    );
+    ];
 
-/* va_is_fictional_area ID
- * Does ID refer to a test area (i.e., one invented for our own purposes)? */
+/**
+ * va_is_fictional_area ID
+ * Does ID refer to a test area (i.e., one invented for our own purposes)?
+ */
 function va_is_fictional_area($id) {
-    if ($id >= 1000001 && $id <= 1000008)
-        return true;
-    else
-        return false;
+  if ($id >= 1000001 && $id <= 1000008) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
 }
 
 /* Special area IDs (see perllib/mysociety/VotingArea.pm for more) */
 $HOC_AREA_ID = 900008;
-
