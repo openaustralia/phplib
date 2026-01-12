@@ -117,7 +117,7 @@ function stash_redirect($key, $email = NULL, $function = NULL) {
   }
 
   if (is_null($method)) {
-    err(_("If you got the email more than a year ago, then your request has probably expired.  Please try doing what you were doing from the beginning."), E_USER_NOTICE);
+    err(gettext("If you got the email more than a year ago, then your request has probably expired.  Please try doing what you were doing from the beginning."), E_USER_NOTICE);
   }
   if (headers_sent()) {
     err("Headers have already been sent in stash_redirect('$key')");
@@ -158,7 +158,7 @@ function stash_check_for_post_redirect() {
   /* Extract the post data */
   [$method, $url, $post_data] = db_getRow_list('select method, url, post_data from requeststash where key = ?', $key);
   if (is_null($method)) {
-    err(_("If you got the email more than a year ago, then your request has probably expired.  Please try doing what you were doing from the beginning."), E_USER_NOTICE);
+    err(gettext("If you got the email more than a year ago, then your request has probably expired.  Please try doing what you were doing from the beginning."), E_USER_NOTICE);
   }
 
   /* Postgres/PEAR DB BYTEA madness -- see comment in auth.php. */
