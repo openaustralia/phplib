@@ -173,6 +173,6 @@ function importparams_validate_email($email) {
     return NULL;
   }
   else {
-    return _("Please enter a valid email address");
+    return gettext("Please enter a valid email address");
   }
 }

@@ -103,7 +103,7 @@ class Person {
     }
     elseif (is_null($this->name)) {
       // Try calling name_or_blank or has_name.
-      err(_("Person has no name in name() function"));
+      err(gettext("Person has no name in name() function"));
     }
     return $this->name;
   }
@@ -162,7 +162,7 @@ class Person {
       return FALSE;
     }
     if (!$newname) {
-      err(_("Name expected in matches_name"));
+      err(gettext("Name expected in matches_name"));
     }
     return person_canonicalise_name($newname) == person_canonicalise_name($this->name);
   }
@@ -173,7 +173,7 @@ class Person {
    */
   public function password($password) {
     if (is_null($password)) {
-      err(_("PASSWORD must not be null in password method"));
+      err(gettext("PASSWORD must not be null in password method"));
     }
     db_query('update person set password = ? where id = ?', [crypt($password), $this->id]);
   }

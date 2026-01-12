@@ -460,7 +460,7 @@ function prettify($s, $html = TRUE) {
       $tt = strftime('%H:%M', $s);
       $t = time();
       if (strftime('%Y%m%d', $s) == strftime('%Y%m%d', $t)) {
-        $tt = "$tt " . _('today');
+        $tt = "$tt " . gettext('today');
       }
       else {
         $tt = "$tt, " . strftime('%Y&#24180;%m&#26376;%d&#26085;', $s);
@@ -470,7 +470,7 @@ function prettify($s, $html = TRUE) {
     $tt = strftime('%H:%M', $s);
     $t = time();
     if (strftime('%Y%m%d', $s) == strftime('%Y%m%d', $t)) {
-      $tt = "$tt " . _('today');
+      $tt = "$tt " . gettext('today');
     }
     elseif (strftime('%U %Y', $s) == strftime('%U %Y', $t)) {
       $tt = "$tt, " . strftime('%A', $s);
