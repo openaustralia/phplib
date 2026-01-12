@@ -13,8 +13,18 @@
  */
 class ADMIN_PAGE_PHPINFO {
 
+  /**
+   * The page id.
+   *
+   * @var string id
+   */
   public $id;
 
+  /**
+   * The page name.
+   *
+   * @var string navname
+   */
   public $navname;
 
   /**

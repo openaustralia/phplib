@@ -68,7 +68,7 @@ class Person {
       err("No such person '$id'");
     }
     [$this->email, $this->name, $this->password, $this->website, $this->numlogins]
-            = db_getRow_list('select email, name, password, website, numlogins from person where id = ?', $id);
+      = db_getRow_list('select email, name, password, website, numlogins from person where id = ?', $id);
   }
 
   /**

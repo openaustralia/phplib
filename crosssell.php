@@ -142,7 +142,7 @@ function crosssell_fetch_page($host, $url) {
   stream_set_blocking($fp, 0);
   stream_set_timeout($fp, 5);
   $sockstart = getmicrotime();
-  fputs($fp, "GET $url HTTP/1.0\r\nHost: $host\r\n\r\n");
+  fwrite($fp, "GET $url HTTP/1.0\r\nHost: $host\r\n\r\n");
   $response = '';
   $body = FALSE;
   while (!feof($fp) and (getmicrotime() < $sockstart + 5)) {

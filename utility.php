@@ -436,12 +436,12 @@ function prettify($s, $html = TRUE) {
       return date('jS F Y', $e);
     }
     elseif ($locale_current == 'eo') {
-      return strftime('la %e-a de %B %Y', $e);
+      return date('\l\a j\-\a \d\e F Y', $e);
     }
     elseif ($locale_current == 'zh') {
-      return strftime('%Y&#24180;%m&#26376;%d&#26085;', $e);
+      return date('Y\&\#\2\4\1\8\0\;m\&\#\2\6\3\7\6\;d\&\#\2\6\0\8\5\;', $e);
     }
-    return strftime('%e %B %Y', $e);
+    return date('j F Y', $e);
   }
   if (preg_match('#^(\d{4})-(\d\d)-(\d\d) (\d\d:\d\d:\d\d)$#', $s, $m)) {
     [, $y, $m, $d, $tim] = $m;
@@ -452,34 +452,34 @@ function prettify($s, $html = TRUE) {
       }
       return date('jS F Y', $e);
     }
-    return strftime('%e %B %Y', $e) . " $tim";
+    return date('j F Y', $e) . " $tim";
   }
   if ($s > 100000000) {
     // Assume it's an epoch.
     if ($locale_current == 'zh') {
-      $tt = strftime('%H:%M', $s);
+      $tt = date('H:i', $s);
       $t = time();
-      if (strftime('%Y%m%d', $s) == strftime('%Y%m%d', $t)) {
+      if (date('Ymd', $s) == date('Ymd', $t)) {
         $tt = "$tt " . gettext('today');
       }
       else {
-        $tt = "$tt, " . strftime('%Y&#24180;%m&#26376;%d&#26085;', $s);
+        $tt = "$tt, " . date('Y\&\#\2\4\1\8\0\;\m\&\#\2\6\3\7\6\;\d\&\#\2\6\0\8\5\;', $s);
       }
       return $tt;
     }
-    $tt = strftime('%H:%M', $s);
+    $tt = date('H:i', $s);
     $t = time();
-    if (strftime('%Y%m%d', $s) == strftime('%Y%m%d', $t)) {
+    if (date('Ymd', $s) == date('Ymd', $t)) {
       $tt = "$tt " . gettext('today');
     }
-    elseif (strftime('%U %Y', $s) == strftime('%U %Y', $t)) {
-      $tt = "$tt, " . strftime('%A', $s);
+    elseif (date('U Y', $s) == date('U Y', $t)) {
+      $tt = "$tt, " . date('l', $s);
     }
-    elseif (strftime('%Y', $s) == strftime('%Y', $t)) {
-      $tt = "$tt, " . strftime('%A %e %B', $s);
+    elseif (date('Y', $s) == date('Y', $t)) {
+      $tt = "$tt, " . date('l j F', $s);
     }
     else {
-      $tt = "$tt, " . strftime('%a %e %B %Y', $s);
+      $tt = "$tt, " . date('D j F Y', $s);
     }
     return $tt;
   }

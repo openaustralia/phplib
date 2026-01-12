@@ -101,7 +101,7 @@ function cond_quote_etag($etag) {
  */
 function cond_headers($time, $etag = NULL) {
   if (isset($time)) {
-    header('Last-Modified: ' . gmstrftime('%a, %d %b %Y %H:%M:%S GMT', $time));
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s e', $time));
   }
   if (isset($etag)) {
     header('ETag: W/' . cond_quote_etag($etag));
