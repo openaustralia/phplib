@@ -28,7 +28,7 @@ require_once 'db.php';
 function stash_request($extra = NULL, $email = NULL) {
   $url = url_invoked();
   if (!is_null($_SERVER['QUERY_STRING'])) {
-    $url .= "?${_SERVER['QUERY_STRING']}";
+    $url .= "?{$_SERVER['QUERY_STRING']}";
   }
   $v = NULL;
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -101,7 +101,7 @@ function stash_redirect($key, $email = NULL, $function = NULL) {
     // For if they changed email address on login screen.
     $post_data = pg_unescape_bytea($post_data);
     $pos = 0;
-    $params = rabx_wire_rd(&$post_data, &$pos);
+    $params = rabx_wire_rd($post_data, $pos);
     if (rabx_is_error($params)) {
       err("Bad serialised POST data in stash_redirect('$key')");
     }
@@ -164,7 +164,7 @@ function stash_check_for_post_redirect() {
   /* Postgres/PEAR DB BYTEA madness -- see comment in auth.php. */
   $post_data = pg_unescape_bytea($post_data);
   $pos = 0;
-  $stashed_POST = rabx_wire_rd(&$post_data, &$pos);
+  $stashed_POST = rabx_wire_rd($post_data, $pos);
   if (rabx_is_error($stashed_POST)) {
     err("Bad serialised POST data in stash_check_for_post_redirect('$key')");
   }
