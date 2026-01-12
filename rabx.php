@@ -255,7 +255,7 @@ function rabx_wire_rd(&$buffer, &$pos) {
   ++$pos;
 
   /* Check for valid type. */
-  if (!strchr("NIRTBLA", $type)) {
+  if (!strstr("NIRTBLA", $type)) {
     return rabx_error(RABX_ERROR_PROTOCOL, "bad type character \"$type\" at position $pos");
   }
 
