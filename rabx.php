@@ -42,7 +42,7 @@ class RABX_Error {
   /**
    *
    */
-  public function RABX_Error($code, $text, $extra = NULL) {
+  public function __construct($code, $text, $extra = NULL) {
     $this->code = $code;
     $this->text = $text;
     $this->extra = $extra;
@@ -426,7 +426,7 @@ class RABX_Client {
    * USERPWD is optional HTTP authentication information. It's a string
    * formatted as "username:password".
    */
-  public function RABX_Client($url, $userpwd = NULL) {
+  public function __construct($url, $userpwd = NULL) {
     $this->url = $url;
     $this->ch = curl_init();
     $this->userpwd = $userpwd;

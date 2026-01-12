@@ -13,10 +13,14 @@
  */
 class ADMIN_PAGE_CONFIGINFO {
 
+  public $id;
+
+  public $navname;
+
   /**
    *
    */
-  public function ADMIN_PAGE_CONFIGINFO() {
+  public function __construct() {
     $this->id = "confinfo";
     $this->navname = "Configuration Values";
   }

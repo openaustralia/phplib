@@ -166,7 +166,7 @@ class HTMLString {
   /**
    *
    */
-  public function HTMLString($args = []) {
+  public function __construct($args = []) {
     if (is_a($args[0], "HTMLString_FormatSpecifier")) {
       $format = array_shift($args);
       // Sprintf constructor.
@@ -232,7 +232,7 @@ class HTMLString_FormatSpecifier {
   /**
    *
    */
-  public function HTMLString_FormatSpecifier($a) {
+  public function __construct($a) {
     $this->text = $a;
   }
 
