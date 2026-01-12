@@ -33,6 +33,6 @@ jobs:
         env:
           fail-fast: true
       - name: phpcs
-        run: ./vendor/bin/phpcs --report=summary www scripts
+        run: composer run phpcs
         env:
           fail-fast: true

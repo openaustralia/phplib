@@ -1,2 +1,4 @@
+phpcs-report.json
+
 vendor
 vendor/**
