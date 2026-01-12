@@ -165,8 +165,8 @@ function admin_render_form($form) {
   $renderer->setHeaderTemplate('<tr><td style="white-space:nowrap;background:#996;color:#ffc;" align="left" colspan="2"><b>{header}</b></td></tr>');
 
   // Use for labels on specific groups:
-  //    $renderer->setGroupTemplate('<table><tr>{content}</tr></table>', ***);
-  //    $renderer->setGroupElementTemplate('<td>{element}<br /><span style="font-size:10px;"><!-- BEGIN required --><span style="color: #f00">*</span><!-- END required --><span style="color:#996;">{label}</span></span></td>', ***);.
+  // $renderer->setGroupTemplate('<table><tr>{content}</tr></table>', ***);
+  // $renderer->setGroupElementTemplate('<td>{element}<br /><span style="font-size:10px;"><!-- BEGIN required --><span style="color: #f00">*</span><!-- END required --><span style="color:#996;">{label}</span></span></td>', ***);.
 
   $form->accept($renderer);
   echo $renderer->toHtml();
