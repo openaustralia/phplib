@@ -103,8 +103,8 @@ function db_connect() {
 
   $connstr = '';
   foreach ($vars as $k => $v) {
-    if (defined("OPTION_${prefix}_DB_$v")) {
-      $connstr .= " $k='" . constant("OPTION_${prefix}_DB_$v") . "'";
+    if (defined("OPTION_{$prefix}_DB_$v")) {
+      $connstr .= " $k='" . constant("OPTION_{$prefix}_DB_$v") . "'";
     }
   }
   $connstr .= " connect_timeout=10 sslmode=allow";
@@ -115,8 +115,8 @@ function db_connect() {
    *  - that we can't have more PHP processes than the database server
    *  permits connections. */
   $persistent = FALSE;
-  if (defined("OPTION_${prefix}_DB_PERSISTENT")) {
-    $persistent = constant("OPTION_${prefix}_DB_PERSISTENT") ? TRUE : FALSE;
+  if (defined("OPTION_{$prefix}_DB_PERSISTENT")) {
+    $persistent = constant("OPTION_{$prefix}_DB_PERSISTENT") ? TRUE : FALSE;
   }
 
   if ($persistent) {
@@ -362,7 +362,7 @@ function db_end() {
  */
 function db_get_locks() {
   $prefix = OPTION_PHP_MAINDB;
-  $dbname = "OPTION_${prefix}_DB_dbname";
+  $dbname = "OPTION_{$prefix}_DB_dbname";
   $ret = "datname,relname,transaction,mode,granted,usename,substr,query_start,age,procpid\n";
 
   $q = db_query('select pg_stat_activity.datname,pg_class.relname,pg_locks.transaction, pg_locks.mode, pg_locks.granted,pg_stat_activity.usename,substr(pg_stat_activity.current_query,1,30), pg_stat_activity.query_start, age(now(),pg_stat_activity.query_start) as "age", pg_stat_activity.procpid 
