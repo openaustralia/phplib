@@ -13,10 +13,14 @@
  */
 class ADMIN_PAGE_SERVERINFO {
 
+  public $id;
+
+  public $navname;
+
   /**
    *
    */
-  public function ADMIN_PAGE_SERVERINFO() {
+  public function __construct() {
     $this->id = "serverinfo";
     $this->navname = "Server Information";
   }
