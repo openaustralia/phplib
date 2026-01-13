@@ -10,6 +10,8 @@
  *
  */
 
+namespace Oaf\Phplib\Sparkline;
+
 require_once('Sparkline.php');
 
 class Sparkline_Bar extends Sparkline {
@@ -186,6 +188,5 @@ class Sparkline_Bar extends Sparkline {
       }
     }
   } // function Render
-} // class Sparkline_Bar
 
-?>
+} // class Sparkline_Bar

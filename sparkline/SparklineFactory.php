@@ -10,6 +10,8 @@
  *
  */
 
+namespace Oaf\Phplib\Sparkline;
+
 define('DEBUG_NONE',     0); // nothing
 define('DEBUG_ERROR',    1); // major errors
 define('DEBUG_WARNING',  2); // warnings
@@ -68,7 +70,7 @@ function log_write($string, $type = '', $date = false) {
   }
 } // function log_write
 
-class Object {
+class SparklineFactory {
 
   var $isError;
   var $logFile;
@@ -80,7 +82,7 @@ class Object {
   ////////////////////////////////////////////////////////////////////////////
   // constructor
   //
-  function Object($catch_errors = true) {
+  function __construct($catch_errors = true) {
     $this->isError         = false;
     $this->logFile         = null;
     $this->logDate         = '';
@@ -153,6 +155,4 @@ class Object {
     return $this->isError;
   } // function IsError
 
-} // class Object
-
-?>
+} // class SparklineFactory
