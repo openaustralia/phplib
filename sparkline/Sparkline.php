@@ -7,8 +7,9 @@
  * Sparkline is distributed under a BSD License.  See LICENSE for details.
  *
  * $Id: Sparkline.php,v 1.1 2006/02/12 20:46:09 matthew Exp $
- *
  */
+
+namespace Oaf\Phplib\Sparkline;
 
 define('TEXT_TOP',    1);
 define('TEXT_RIGHT',  2);
@@ -21,9 +22,9 @@ define('FONT_3', 3);
 define('FONT_4', 4);
 define('FONT_5', 5);
 
-require_once('Object.php');
+require_once('SparklineFactory.php');
 
-class Sparkline extends Object {
+class Sparkline extends SparklineFactory {
 
   var $imageX;
   var $imageY;
@@ -37,8 +38,8 @@ class Sparkline extends Object {
   ////////////////////////////////////////////////////////////////////////////
   // constructor
   //
-  function Sparkline($catch_errors = true) {
-    parent::Object($catch_errors);
+  function __construct($catch_errors = true) {
+    parent::__construct($catch_errors);
 
     $this->colorList       = array();
     $this->colorBackground = 'white';
@@ -492,5 +493,3 @@ class Sparkline extends Object {
   } // function OutputToFile
 
 } // class Sparkline
-
-?>

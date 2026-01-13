@@ -10,6 +10,8 @@
  * 
  */
 
+namespace Oaf\Phplib\Sparkline;
+
 require_once('Sparkline.php');
 
 class Sparkline_Box extends Sparkline {
@@ -43,6 +45,5 @@ class Sparkline_Box extends Sparkline {
     $mean = round($this->mean*100, 1) . '%';
     $this->DrawTextRelative($mean, 2+$this->mean*$this->width, $yy-1, 'red', TEXT_TOP, 0);
   }
-}
 
-?>
+}
