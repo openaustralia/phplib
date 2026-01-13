@@ -81,7 +81,7 @@ $share_sites = [
  *
  */
 function share_form($url, $title, $email_url, $name, $email) {
-  ?>
+    ?>
 <div id="share_form">
 <a href="#" onclick="$('#share_form').hide(); return false" class="share_close"><?php echo gettext('Close'); ?></a>
 <ul class="share_tabs">
@@ -89,33 +89,33 @@ function share_form($url, $title, $email_url, $name, $email) {
 <li id="share_tab2" onclick="share_tab('2');"><?php echo gettext('Email'); ?></li>
 </ul>
 <div class="clear"></div>
-  <?php
-  share_form_social($url, $title);
-  share_form_email($email_url, $name, $email);
+    <?php
+    share_form_social($url, $title);
+    share_form_email($email_url, $name, $email);
 }
 
 /**
  *
  */
 function share_form_social($url, $title) {
-  global $share_sites;
-  echo '<div id="share_social"><ul>';
-  foreach ($share_sites as $key => $data) {
-    $u = str_replace(['{url}', '{title}'],
+    global $share_sites;
+    echo '<div id="share_social"><ul>';
+    foreach ($share_sites as $key => $data) {
+        $u = str_replace(['{url}', '{title}'],
           [urlencode($url), urlencode($title)],
           $data['url']
-      );
-    print '<li><a href="' . htmlspecialchars($u) . '" id="share_' . $key . '">'
+        );
+        print '<li><a href="' . htmlspecialchars($u) . '" id="share_' . $key . '">'
             . str_replace(' ', '&nbsp;', $data['name']) . '</a></li>' . "\n";
-  }
-  echo '</ul> <div class="clear"></div> </div>';
+    }
+    echo '</ul> <div class="clear"></div> </div>';
 }
 
 /**
  *
  */
 function share_form_email($url, $name, $email) {
-  ?>
+    ?>
 <div id="share_email">
 <form action="<?php echo $url; ?>" method="post">
 <fieldset>
@@ -144,5 +144,5 @@ function share_form_email($url, $name, $email) {
 </form>
 </div>
 </div>
-  <?php
+    <?php
 }

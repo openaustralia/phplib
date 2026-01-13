@@ -13,44 +13,44 @@
  */
 class ADMIN_PAGE_PHPINFO {
 
-  /**
-   * The page id.
-   *
-   * @var string id
-   */
-  public $id;
+    /**
+     * The page id.
+     *
+     * @var string id
+     */
+    public $id;
 
-  /**
-   * The page name.
-   *
-   * @var string navname
-   */
-  public $navname;
+    /**
+     * The page name.
+     *
+     * @var string navname
+     */
+    public $navname;
 
-  /**
-   *
-   */
-  public function __construct() {
-    $this->id = "phpinfo";
-    $this->navname = "PHP Environment";
-  }
+    /**
+     *
+     */
+    public function __construct() {
+        $this->id = "phpinfo";
+        $this->navname = "PHP Environment";
+    }
 
-  /**
-   *
-   */
-  public function display($self_link) {
-    ob_start();
-    phpinfo();
-    $php_info = ob_get_contents();
-    ob_end_clean();
+    /**
+     *
+     */
+    public function display($self_link) {
+        ob_start();
+        phpinfo();
+        $php_info = ob_get_contents();
+        ob_end_clean();
 
-    preg_match_all("=<body[^>]*>(.*)</body>=siU", $php_info, $a);
-    $php_info = $a[1][0];
-    $php_info = str_replace(" width=\"600\"", " width=\"600\"", $php_info);
-    $php_info = str_replace(";", "; ", $php_info);
-    $php_info = str_replace(",", ", ", $php_info);
+        preg_match_all("=<body[^>]*>(.*)</body>=siU", $php_info, $a);
+        $php_info = $a[1][0];
+        $php_info = str_replace(" width=\"600\"", " width=\"600\"", $php_info);
+        $php_info = str_replace(";", "; ", $php_info);
+        $php_info = str_replace(",", ", ", $php_info);
 
-    print $php_info;
-  }
+        print $php_info;
+    }
 
 }

@@ -13,26 +13,26 @@
  */
 class ADMIN_PAGE_EMBED {
 
-  public $id;
+    public $id;
 
-  public $navname;
+    public $navname;
 
-  public $url;
+    public $url;
 
-  /**
-   *
-   */
-  public function __construct($id, $navname, $url) {
-    $this->id = $id;
-    $this->navname = $navname;
-    $this->url = $url;
-  }
+    /**
+     *
+     */
+    public function __construct($id, $navname, $url) {
+        $this->id = $id;
+        $this->navname = $navname;
+        $this->url = $url;
+    }
 
-  /**
-   *
-   */
-  public function display($self_link) {
-    print $this->url;
-  }
+    /**
+     *
+     */
+    public function display($self_link) {
+        print $this->url;
+    }
 
 }

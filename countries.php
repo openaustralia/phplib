@@ -265,10 +265,10 @@ $countries_code_to_name = [
  * Map from ISO 3166 code to country name. */
 $countries_name_to_code = [];
 foreach ($countries_code_to_name as $countries_code => $countries_name) {
-  if (array_key_exists($countries_name, $countries_name_to_code)) {
-    die("Name $countries_name exists twice in countries_code_to_name");
-  }
-  $countries_name_to_code[strtolower($countries_name)] = $countries_code;
+    if (array_key_exists($countries_name, $countries_name_to_code)) {
+        die("Name $countries_name exists twice in countries_code_to_name");
+    }
+    $countries_name_to_code[strtolower($countries_name)] = $countries_code;
 }
 
 /* $countries_statecode_to_name
@@ -330,10 +330,10 @@ $countries_statecode_to_name = [
 ];
 $countries_name_to_statecode = [];
 foreach ($countries_statecode_to_name as $country => $states) {
-  $countries_name_to_statecode[$country] = [];
-  foreach ($states as $code => $state) {
-    $countries_name_to_statecode[$country][strtolower($state)] = $code;
-  }
+    $countries_name_to_statecode[$country] = [];
+    foreach ($states as $code => $state) {
+        $countries_name_to_statecode[$country][strtolower($state)] = $code;
+    }
 }
 
 $countries_code_to_name_with_from_fr = [
@@ -1080,8 +1080,8 @@ $countries_code_to_name_with_in_fr = [
  *
  */
 function countries_sort($a, $b) {
-  global $countries_code_to_name;
-  return strcoll($countries_code_to_name[$a], $countries_code_to_name[$b]);
+    global $countries_code_to_name;
+    return strcoll($countries_code_to_name[$a], $countries_code_to_name[$b]);
 }
 
 /**
@@ -1091,13 +1091,13 @@ function countries_sort($a, $b) {
  *
  */
 function countries_with_to($c) {
-  global $countries_code_to_name, $countries_code_to_name_with_to_fr, $locale_current;
-  if ($locale_current == 'fr' && array_key_exists($c, $countries_code_to_name_with_to_fr)) {
-    return $countries_code_to_name_with_to_fr[$c] . ' ' . $countries_code_to_name[$c];
-  }
-  else {
-    return $countries_code_to_name[$c];
-  }
+    global $countries_code_to_name, $countries_code_to_name_with_to_fr, $locale_current;
+    if ($locale_current == 'fr' && array_key_exists($c, $countries_code_to_name_with_to_fr)) {
+        return $countries_code_to_name_with_to_fr[$c] . ' ' . $countries_code_to_name[$c];
+    }
+    else {
+        return $countries_code_to_name[$c];
+    }
 }
 
 /**
@@ -1107,13 +1107,13 @@ function countries_with_to($c) {
  *
  */
 function countries_with_in($c) {
-  global $countries_code_to_name, $countries_code_to_name_with_in_fr, $locale_current;
-  if ($locale_current == 'fr' && array_key_exists($c, $countries_code_to_name_with_in_fr)) {
-    return $countries_code_to_name_with_in_fr[$c] . ' ' . $countries_code_to_name[$c];
-  }
-  else {
-    return $countries_code_to_name[$c];
-  }
+    global $countries_code_to_name, $countries_code_to_name_with_in_fr, $locale_current;
+    if ($locale_current == 'fr' && array_key_exists($c, $countries_code_to_name_with_in_fr)) {
+        return $countries_code_to_name_with_in_fr[$c] . ' ' . $countries_code_to_name[$c];
+    }
+    else {
+        return $countries_code_to_name[$c];
+    }
 }
 
 /**
@@ -1123,11 +1123,11 @@ function countries_with_in($c) {
  *
  */
 function countries_with_from($c) {
-  global $countries_code_to_name, $countries_code_to_name_with_from_fr, $locale_current;
-  if ($locale_current == 'fr' && array_key_exists($c, $countries_code_to_name_with_from_fr)) {
-    return $countries_code_to_name_with_from_fr[$c] . ' ' . $countries_code_to_name[$c];
-  }
-  else {
-    return $countries_code_to_name[$c];
-  }
+    global $countries_code_to_name, $countries_code_to_name_with_from_fr, $locale_current;
+    if ($locale_current == 'fr' && array_key_exists($c, $countries_code_to_name_with_from_fr)) {
+        return $countries_code_to_name_with_from_fr[$c] . ' ' . $countries_code_to_name[$c];
+    }
+    else {
+        return $countries_code_to_name[$c];
+    }
 }

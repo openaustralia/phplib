@@ -26,15 +26,15 @@ require_once 'db.php';
  * stash_redirect if they change email on te login screen.
  */
 function stash_request($extra = NULL, $email = NULL) {
-  $url = url_invoked();
-  if (!is_null($_SERVER['QUERY_STRING'])) {
-    $url .= "?{$_SERVER['QUERY_STRING']}";
-  }
-  $v = NULL;
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $v = $_POST;
-  }
-  return stash_new_request($_SERVER['REQUEST_METHOD'], $url, $v, $extra, $email);
+    $url = url_invoked();
+    if (!is_null($_SERVER['QUERY_STRING'])) {
+        $url .= "?{$_SERVER['QUERY_STRING']}";
+    }
+    $v = NULL;
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $v = $_POST;
+    }
+    return stash_new_request($_SERVER['REQUEST_METHOD'], $url, $v, $extra, $email);
 }
 
 /**
@@ -45,45 +45,45 @@ function stash_request($extra = NULL, $email = NULL) {
  * which represents that request, rather than the current one.
  */
 function stash_new_request($method, $url, $params, $extra = NULL, $email = NULL) {
-  $key = bin2hex(random_bytes(8));
-  if ($method == 'GET' || $method == 'HEAD') {
-    if (!is_null($params)) {
-      /* Strip query. */
-      $url = preg_replace('/\?.*$/', '', $url);
-      $a = [];
-      foreach ($params as $k => $v) {
-        /* XXX doesn't handle multiple parameters */
-        array_push($a, urlencode($k) . '=' . urlencode($v));
-      }
-      if (count($a) > 0) {
-        $url .= '?' . implode('&', $a);
-      }
-    }
-    db_query('
+    $key = bin2hex(random_bytes(8));
+    if ($method == 'GET' || $method == 'HEAD') {
+        if (!is_null($params)) {
+            /* Strip query. */
+            $url = preg_replace('/\?.*$/', '', $url);
+            $a = [];
+            foreach ($params as $k => $v) {
+                /* XXX doesn't handle multiple parameters */
+                array_push($a, urlencode($k) . '=' . urlencode($v));
+            }
+            if (count($a) > 0) {
+                $url .= '?' . implode('&', $a);
+            }
+        }
+        db_query('
                 insert into requeststash (key, method, url, extra, email)
                 values (?, ?, ?, ?, ?)',
               [$key, 'GET', $url, $extra, $email]);
-  }
-  elseif ($method == 'POST') {
-    $ser = '';
-    rabx_wire_wr($params, $ser);
-    db_query('
+    }
+    elseif ($method == 'POST') {
+        $ser = '';
+        rabx_wire_wr($params, $ser);
+        db_query('
                 insert into requeststash (key, method, url, post_data, extra, email)
                 values (?, ?, ?, ?, ?, ?)',
               [$key, 'POST', $url, $ser, $extra, $email]);
-  }
-  else {
-    err("Cannot stash request for method '$method'");
-  }
+    }
+    else {
+        err("Cannot stash request for method '$method'");
+    }
 
-  /* Also take this opportunity to remove old stashed state from the db. We
-   * do this as two queries, one to produce the threshold time and another to
-   * actually do the delete because PG isn't smart enough (in 7.3.x, anyway)
-   * to use the index for the query if the RHS of the < is nonconstant. */
-  $t = db_getOne("select ms_current_timestamp() - '365 days'::interval");
-  db_query("delete from requeststash where whensaved < ?", $t);
+    /* Also take this opportunity to remove old stashed state from the db. We
+     * do this as two queries, one to produce the threshold time and another to
+     * actually do the delete because PG isn't smart enough (in 7.3.x, anyway)
+     * to use the index for the query if the RHS of the < is nonconstant. */
+    $t = db_getOne("select ms_current_timestamp() - '365 days'::interval");
+    db_query("delete from requeststash where whensaved < ?", $t);
 
-  return $key;
+    return $key;
 }
 
 /**
@@ -95,47 +95,47 @@ function stash_new_request($method, $url, $params, $extra = NULL, $email = NULL)
  * to stash_request) is replaced with EMAIL using FUNCTION.
  */
 function stash_redirect($key, $email = NULL, $function = NULL) {
-  [$method, $url, $post_data, $old_email] = db_getRow_list('select method, url, post_data, email from requeststash where key = ?', $key);
+    [$method, $url, $post_data, $old_email] = db_getRow_list('select method, url, post_data, email from requeststash where key = ?', $key);
 
-  if ($email && $old_email) {
-    // For if they changed email address on login screen.
-    $post_data = pg_unescape_bytea($post_data);
-    $pos = 0;
-    $params = rabx_wire_rd($post_data, $pos);
-    if (rabx_is_error($params)) {
-      err("Bad serialised POST data in stash_redirect('$key')");
+    if ($email && $old_email) {
+        // For if they changed email address on login screen.
+        $post_data = pg_unescape_bytea($post_data);
+        $pos = 0;
+        $params = rabx_wire_rd($post_data, $pos);
+        if (rabx_is_error($params)) {
+            err("Bad serialised POST data in stash_redirect('$key')");
+        }
+        $params = call_user_func($function, $params, $old_email, $email);
+        $new_post_data = '';
+        rabx_wire_wr($params, $new_post_data);
+
+        if ($post_data != $new_post_data) {
+            $post_data = $new_post_data;
+            db_query('update requeststash set post_data = ? where key = ?', $post_data, $key);
+            db_commit();
+        }
     }
-    $params = call_user_func($function, $params, $old_email, $email);
-    $new_post_data = '';
-    rabx_wire_wr($params, $new_post_data);
 
-    if ($post_data != $new_post_data) {
-      $post_data = $new_post_data;
-      db_query('update requeststash set post_data = ? where key = ?', $post_data, $key);
-      db_commit();
+    if (is_null($method)) {
+        err(gettext("If you got the email more than a year ago, then your request has probably expired.  Please try doing what you were doing from the beginning."), E_USER_NOTICE);
     }
-  }
-
-  if (is_null($method)) {
-    err(gettext("If you got the email more than a year ago, then your request has probably expired.  Please try doing what you were doing from the beginning."), E_USER_NOTICE);
-  }
-  if (headers_sent()) {
-    err("Headers have already been sent in stash_redirect('$key')");
-  }
-  if ($method == 'GET') {
-    /* should we ob_clean here? */
-    header("Location: $url");
-    exit();
-    // POST.
-  }
-  else {
-    /* add token on end so can pull out POST params after redirect */
-    $url .= strstr($url, "?") ? '&' : '?';
-    $url .= "stashpost=$key";
-    header("Location: $url");
-    // Print "Going to $url";.
-    exit();
-  }
+    if (headers_sent()) {
+        err("Headers have already been sent in stash_redirect('$key')");
+    }
+    if ($method == 'GET') {
+        /* should we ob_clean here? */
+        header("Location: $url");
+        exit();
+        // POST.
+    }
+    else {
+        /* add token on end so can pull out POST params after redirect */
+        $url .= strstr($url, "?") ? '&' : '?';
+        $url .= "stashpost=$key";
+        header("Location: $url");
+        // Print "Going to $url";.
+        exit();
+    }
 }
 
 /* stash_check_for_post_redirect
@@ -147,31 +147,31 @@ $stash_in_stashpost = FALSE;
  *
  */
 function stash_check_for_post_redirect() {
-  /* Are we doing a POST redirect? */
-  $key = get_http_var('stashpost');
-  if (!$key) {
-    return;
-  }
-  global $stash_in_stashpost;
-  $stash_in_stashpost = TRUE;
+    /* Are we doing a POST redirect? */
+    $key = get_http_var('stashpost');
+    if (!$key) {
+        return;
+    }
+    global $stash_in_stashpost;
+    $stash_in_stashpost = TRUE;
 
-  /* Extract the post data */
-  [$method, $url, $post_data] = db_getRow_list('select method, url, post_data from requeststash where key = ?', $key);
-  if (is_null($method)) {
-    err(gettext("If you got the email more than a year ago, then your request has probably expired.  Please try doing what you were doing from the beginning."), E_USER_NOTICE);
-  }
+    /* Extract the post data */
+    [$method, $url, $post_data] = db_getRow_list('select method, url, post_data from requeststash where key = ?', $key);
+    if (is_null($method)) {
+        err(gettext("If you got the email more than a year ago, then your request has probably expired.  Please try doing what you were doing from the beginning."), E_USER_NOTICE);
+    }
 
-  /* Postgres/PEAR DB BYTEA madness -- see comment in auth.php. */
-  $post_data = pg_unescape_bytea($post_data);
-  $pos = 0;
-  $stashed_POST = rabx_wire_rd($post_data, $pos);
-  if (rabx_is_error($stashed_POST)) {
-    err("Bad serialised POST data in stash_check_for_post_redirect('$key')");
-  }
+    /* Postgres/PEAR DB BYTEA madness -- see comment in auth.php. */
+    $post_data = pg_unescape_bytea($post_data);
+    $pos = 0;
+    $stashed_POST = rabx_wire_rd($post_data, $pos);
+    if (rabx_is_error($stashed_POST)) {
+        err("Bad serialised POST data in stash_check_for_post_redirect('$key')");
+    }
 
-  /* Fix $_POST to make this look like one */
-  $_POST = $stashed_POST;
-  // print_r($stashed_POST);
+    /* Fix $_POST to make this look like one */
+    $_POST = $stashed_POST;
+    // print_r($stashed_POST);
 }
 
 /**
@@ -179,7 +179,7 @@ function stash_check_for_post_redirect() {
  * Return any extra data from that stashed with KEY.
  */
 function stash_get_extra($key) {
-  return db_getOne('select extra from requeststash where key = ?', $key);
+    return db_getOne('select extra from requeststash where key = ?', $key);
 }
 
 /**
@@ -187,5 +187,5 @@ function stash_get_extra($key) {
  * Delete any stashed request identified by KEY.
  */
 function stash_delete($key) {
-  db_query('delete from requeststash where key = ?', $key);
+    db_query('delete from requeststash where key = ?', $key);
 }

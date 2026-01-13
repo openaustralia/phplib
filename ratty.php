@@ -25,14 +25,14 @@ $ratty_client->use_post = TRUE;
  *
  */
 function ratty_do_call($name, $args) {
-  global $ratty_client;
-  $res = $ratty_client->call("Ratty.$name", $args);
-  if (rabx_is_error($res)) {
-    err($res->text);
-  }
-  else {
-    return $res;
-  }
+    global $ratty_client;
+    $res = $ratty_client->call("Ratty.$name", $args);
+    if (rabx_is_error($res)) {
+        err($res->text);
+    }
+    else {
+        return $res;
+    }
 }
 
 /**
@@ -46,13 +46,13 @@ function ratty_do_call($name, $args) {
  * specified in the rule.
  */
 function ratty_test($scope, $vals) {
-  if (!isset($scope)) {
-    err("SCOPE must be supplied");
-  }
-  debug("RATTY", "Rate limiting", $vals);
-  $res = ratty_do_call('test', [$scope, $vals]);
-  debug("RATTYRESULT", "Result is:", $res);
-  return $res;
+    if (!isset($scope)) {
+        err("SCOPE must be supplied");
+    }
+    debug("RATTY", "Rate limiting", $vals);
+    $res = ratty_do_call('test', [$scope, $vals]);
+    debug("RATTYRESULT", "Result is:", $res);
+    return $res;
 }
 
 /**
@@ -61,7 +61,7 @@ function ratty_test($scope, $vals) {
  * example).
  */
 function ratty_admin_available_fields($scope) {
-  return ratty_do_call('admin_available_fields', [$scope]);
+    return ratty_do_call('admin_available_fields', [$scope]);
 }
 
 /**
@@ -69,7 +69,7 @@ function ratty_admin_available_fields($scope) {
  * Updates a ratty rule.
  */
 function ratty_admin_update_rule($scope, $vals, $conds) {
-  return ratty_do_call('admin_update_rule', [$scope, $vals, $conds]);
+    return ratty_do_call('admin_update_rule', [$scope, $vals, $conds]);
 }
 
 /**
@@ -77,7 +77,7 @@ function ratty_admin_update_rule($scope, $vals, $conds) {
  * Updates a ratty rule.
  */
 function ratty_admin_delete_rule($scope, $id) {
-  return ratty_do_call('admin_delete_rule', [$scope, $id]);
+    return ratty_do_call('admin_delete_rule', [$scope, $id]);
 }
 
 /**
@@ -85,7 +85,7 @@ function ratty_admin_delete_rule($scope, $id) {
  * Get info about all rules.
  */
 function ratty_admin_get_rules($scope) {
-  return ratty_do_call('admin_get_rules', [$scope]);
+    return ratty_do_call('admin_get_rules', [$scope]);
 }
 
 /**
@@ -93,7 +93,7 @@ function ratty_admin_get_rules($scope) {
  * Get info about a rule.
  */
 function ratty_admin_get_rule($scope, $id) {
-  return ratty_do_call('admin_get_rule', [$scope, $id]);
+    return ratty_do_call('admin_get_rule', [$scope, $id]);
 }
 
 /**
@@ -101,5 +101,5 @@ function ratty_admin_get_rule($scope, $id) {
  * Get all conditions for a rule.
  */
 function ratty_admin_get_conditions($scope, $id) {
-  return ratty_do_call('admin_get_conditions', [$scope, $id]);
+    return ratty_do_call('admin_get_conditions', [$scope, $id]);
 }

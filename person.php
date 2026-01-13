@@ -23,15 +23,15 @@ require_once 'auth.php';
  * so we can have multiple domains in one vhost.
  */
 function person_cookie_domain() {
-  $httphost = $_SERVER['HTTP_HOST'];
-  // XXX there must be a better way of doing this. (Also, the .livesimply
-  // entry is for Francis's local test domain pledge.livesimply)
-  if (preg_match("/[^.]+(\.com|\.cat|\.org|\.net|\.co\.uk|\.org\.uk|\.livesimply)$/", $httphost, $matches)) {
-    return "." . $matches[0];
-  }
-  else {
-    return '.' . OPTION_WEB_DOMAIN;
-  }
+    $httphost = $_SERVER['HTTP_HOST'];
+    // XXX there must be a better way of doing this. (Also, the .livesimply
+    // entry is for Francis's local test domain pledge.livesimply)
+    if (preg_match("/[^.]+(\.com|\.cat|\.org|\.net|\.co\.uk|\.org\.uk|\.livesimply)$/", $httphost, $matches)) {
+        return "." . $matches[0];
+    }
+    else {
+        return '.' . OPTION_WEB_DOMAIN;
+    }
 }
 
 /**
@@ -41,7 +41,7 @@ function person_cookie_domain() {
  * should be updated.
  */
 function person_canonicalise_name($n) {
-  return preg_replace('/[^A-Za-z-]/', '', strtolower($n));
+    return preg_replace('/[^A-Za-z-]/', '', strtolower($n));
 }
 
 /**
@@ -49,176 +49,176 @@ function person_canonicalise_name($n) {
  */
 class Person {
 
-  /**
-   * person ID | EMAIL
-   * Given a person ID or EMAIL address, return a person object describing
-   * their account.
-   */
-  public function __construct($id) {
-    if (preg_match('/@/', $id)) {
-      $this->id = db_getOne('select id from person where lower(email) = ? for update', strtolower($email));
+    /**
+     * person ID | EMAIL
+     * Given a person ID or EMAIL address, return a person object describing
+     * their account.
+     */
+    public function __construct($id) {
+        if (preg_match('/@/', $id)) {
+            $this->id = db_getOne('select id from person where lower(email) = ? for update', strtolower($email));
+        }
+        elseif (preg_match('/^[1-9]\d*$/', $id)) {
+            $this->id = db_getOne('select id from person where id = ? for update', $id);
+        }
+        else {
+            err('value passed to person constructor must be person ID or email address');
+        }
+        if (is_null($this->id)) {
+            err("No such person '$id'");
+        }
+        [$this->email, $this->name, $this->password, $this->website, $this->numlogins]
+        = db_getRow_list('select email, name, password, website, numlogins from person where id = ?', $id);
     }
-    elseif (preg_match('/^[1-9]\d*$/', $id)) {
-      $this->id = db_getOne('select id from person where id = ? for update', $id);
-    }
-    else {
-      err('value passed to person constructor must be person ID or email address');
-    }
-    if (is_null($this->id)) {
-      err("No such person '$id'");
-    }
-    [$this->email, $this->name, $this->password, $this->website, $this->numlogins]
-      = db_getRow_list('select email, name, password, website, numlogins from person where id = ?', $id);
-  }
 
-  /**
-   * id [ID]
-   * Get the person ID.
-   */
-  public function id() {
-    return $this->id;
-  }
+    /**
+     * id [ID]
+     * Get the person ID.
+     */
+    public function id() {
+        return $this->id;
+    }
 
-  /**
-   * email [EMAIL]
-   * Get or set the person's EMAIL address.
-   */
-  public function email($email = NULL) {
-    if (!is_null($email)) {
-      db_query('update person set email = ? where id = ?', [$email, $this->id]);
-      $this->email = $email;
+    /**
+     * email [EMAIL]
+     * Get or set the person's EMAIL address.
+     */
+    public function email($email = NULL) {
+        if (!is_null($email)) {
+            db_query('update person set email = ? where id = ?', [$email, $this->id]);
+            $this->email = $email;
+        }
+        return $this->email;
     }
-    return $this->email;
-  }
 
-  /**
-   * name [NAME]
-   * Get or set the person's NAME.
-   */
-  public function name($name = NULL) {
-    if (!is_null($name)) {
-      db_query('update person set name = ? where id = ?', [$name, $this->id]);
-      db_commit();
-      $this->name = $name;
+    /**
+     * name [NAME]
+     * Get or set the person's NAME.
+     */
+    public function name($name = NULL) {
+        if (!is_null($name)) {
+            db_query('update person set name = ? where id = ?', [$name, $this->id]);
+            db_commit();
+            $this->name = $name;
+        }
+        elseif (is_null($this->name)) {
+            // Try calling name_or_blank or has_name.
+            err(gettext("Person has no name in name() function"));
+        }
+        return $this->name;
     }
-    elseif (is_null($this->name)) {
-      // Try calling name_or_blank or has_name.
-      err(gettext("Person has no name in name() function"));
-    }
-    return $this->name;
-  }
 
-  /**
-   * name_or_blank
-   * Get the person's name, or empty string if unknown.  Use this as
-   * prefilled name field in forms.
-   */
-  public function name_or_blank() {
-    if ($this->name) {
-      return $this->name;
+    /**
+     * name_or_blank
+     * Get the person's name, or empty string if unknown.  Use this as
+     * prefilled name field in forms.
+     */
+    public function name_or_blank() {
+        if ($this->name) {
+            return $this->name;
+        }
+        else {
+            return "";
+        }
     }
-    else {
-      return "";
-    }
-  }
 
-  /**
-   * has_name
-   * Returns true if we have a name for the person
-   */
-  public function has_name() {
-    return $this->name ? TRUE : FALSE;
-  }
-
-  /**
-   * set_website WEBSIte
-   * Set name of person's website.
-   */
-  public function set_website($website) {
-    db_query('update person set website = ? where id = ?', [$website, $this->id]);
-    $this->website = $website;
-  }
-
-  /**
-   * website_or_blank
-   * Get the person's website, or empty string if unknown.  Use this
-   * as prefilled website field in comment forms.
-   */
-  public function website_or_blank() {
-    if ($this->website) {
-      return $this->website;
+    /**
+     * has_name
+     * Returns true if we have a name for the person
+     */
+    public function has_name() {
+        return $this->name ? TRUE : FALSE;
     }
-    else {
-      return "";
-    }
-  }
 
-  /**
-   * matches_name [NEWNAME]
-   * Is NEWNAME essentially the same as the person's existing name?
-   */
-  public function matches_name($newname) {
-    if (!$this->name) {
-      return FALSE;
+    /**
+     * set_website WEBSIte
+     * Set name of person's website.
+     */
+    public function set_website($website) {
+        db_query('update person set website = ? where id = ?', [$website, $this->id]);
+        $this->website = $website;
     }
-    if (!$newname) {
-      err(gettext("Name expected in matches_name"));
-    }
-    return person_canonicalise_name($newname) == person_canonicalise_name($this->name);
-  }
 
-  /**
-   * password PASSWORD
-   * Set the person's PASSWORD.
-   */
-  public function password($password) {
-    if (is_null($password)) {
-      err(gettext("PASSWORD must not be null in password method"));
+    /**
+     * website_or_blank
+     * Get the person's website, or empty string if unknown.  Use this
+     * as prefilled website field in comment forms.
+     */
+    public function website_or_blank() {
+        if ($this->website) {
+            return $this->website;
+        }
+        else {
+            return "";
+        }
     }
-    db_query('update person set password = ? where id = ?', [crypt($password), $this->id]);
-  }
 
-  /**
-   * has_password
-   * Return true if the user has set a password.
-   */
-  public function has_password() {
-    return !is_null($this->password);
-  }
-
-  /**
-   * check_password PASSWORD
-   * Return true if PASSWORD is the person's password, or false otherwise.
-   */
-  public function check_password($p) {
-    $c = db_getOne('select password from person where id = ?', $this->id);
-    if (is_null($c)) {
-      return FALSE;
+    /**
+     * matches_name [NEWNAME]
+     * Is NEWNAME essentially the same as the person's existing name?
+     */
+    public function matches_name($newname) {
+        if (!$this->name) {
+            return FALSE;
+        }
+        if (!$newname) {
+            err(gettext("Name expected in matches_name"));
+        }
+        return person_canonicalise_name($newname) == person_canonicalise_name($this->name);
     }
-    elseif (crypt($p, $c) != $c) {
-      return FALSE;
-    }
-    else {
-      return TRUE;
-    }
-  }
 
-  /**
-   * numlogins
-   * How many times has this person logged in?
-   */
-  public function numlogins() {
-    return $this->numlogins;
-  }
+    /**
+     * password PASSWORD
+     * Set the person's PASSWORD.
+     */
+    public function password($password) {
+        if (is_null($password)) {
+            err(gettext("PASSWORD must not be null in password method"));
+        }
+        db_query('update person set password = ? where id = ?', [crypt($password), $this->id]);
+    }
 
-  /**
-   * inc_numlogins
-   * Record this person as having logged in an additional time.
-   */
-  public function inc_numlogins() {
-    ++$this->numlogins;
-    db_query('update person set numlogins = numlogins + 1 where id = ?', $this->id);
-  }
+    /**
+     * has_password
+     * Return true if the user has set a password.
+     */
+    public function has_password() {
+        return !is_null($this->password);
+    }
+
+    /**
+     * check_password PASSWORD
+     * Return true if PASSWORD is the person's password, or false otherwise.
+     */
+    public function check_password($p) {
+        $c = db_getOne('select password from person where id = ?', $this->id);
+        if (is_null($c)) {
+            return FALSE;
+        }
+        elseif (crypt($p, $c) != $c) {
+            return FALSE;
+        }
+        else {
+            return TRUE;
+        }
+    }
+
+    /**
+     * numlogins
+     * How many times has this person logged in?
+     */
+    public function numlogins() {
+        return $this->numlogins;
+    }
+
+    /**
+     * inc_numlogins
+     * Record this person as having logged in an additional time.
+     */
+    public function inc_numlogins() {
+        ++$this->numlogins;
+        db_query('update person set numlogins = numlogins + 1 where id = ?', $this->id);
+    }
 
 }
 
@@ -229,18 +229,18 @@ class Person {
  * server); if not specified, a default of one year is used.
  */
 function person_cookie_token($id, $duration = NULL) {
-  if (is_null($duration)) {
-    $duration = 365 * 86400; /* one year */
-  }  if (!preg_match('/^[1-9]\d*$/', $id)) {
-    err("ID should be a decimal integer, not '$id'");
-  }
-  if (!preg_match('/^[1-9]\d*$/', $duration) || $duration <= 0) {
-    err("DURATION should be a positive decimal integer, not '$duration'");
-  }
-  $salt = bin2hex(random_bytes(8));
-  $start = time();
-  $sha = sha1("$id/$start/$duration/$salt/" . db_secret());
-  return sprintf('%d/%d/%d/%s/%s', $id, $start, $duration, $salt, $sha);
+    if (is_null($duration)) {
+        $duration = 365 * 86400; /* one year */
+    }  if (!preg_match('/^[1-9]\d*$/', $id)) {
+        err("ID should be a decimal integer, not '$id'");
+    }
+    if (!preg_match('/^[1-9]\d*$/', $duration) || $duration <= 0) {
+        err("DURATION should be a positive decimal integer, not '$duration'");
+    }
+    $salt = bin2hex(random_bytes(8));
+    $start = time();
+    $sha = sha1("$id/$start/$duration/$salt/" . db_secret());
+    return sprintf('%d/%d/%d/%s/%s', $id, $start, $duration, $salt, $sha);
 }
 
 /**
@@ -251,23 +251,23 @@ function person_cookie_token($id, $duration = NULL) {
  * have been locked with SELECT ... FOR UPDATE.
  */
 function person_check_cookie_token($token) {
-  $a = [];
-  if (!preg_match('#^([1-9]\d*)/([1-9]\d*)/([1-9]\d*)/([0-9a-f]+)/([0-9a-f]+)$#', $token, $a)) {
-    return NULL;
-  }
-  [$x, $id, $start, $duration, $salt, $sha] = $a;
-  if (sha1("$id/$start/$duration/$salt/" . db_secret()) != $sha) {
-    return NULL;
-  }
-  elseif ($start + $duration < time()) {
-    return NULL;
-  }
-  elseif (is_null(db_getOne('select id from person where id = ? for update', $id))) {
-    return NULL;
-  }
-  else {
-    return $id;
-  }
+    $a = [];
+    if (!preg_match('#^([1-9]\d*)/([1-9]\d*)/([1-9]\d*)/([0-9a-f]+)/([0-9a-f]+)$#', $token, $a)) {
+        return NULL;
+    }
+    [$x, $id, $start, $duration, $salt, $sha] = $a;
+    if (sha1("$id/$start/$duration/$salt/" . db_secret()) != $sha) {
+        return NULL;
+    }
+    elseif ($start + $duration < time()) {
+        return NULL;
+    }
+    elseif (is_null(db_getOne('select id from person where id = ? for update', $id))) {
+        return NULL;
+    }
+    else {
+        return $id;
+    }
 }
 
 /**
@@ -275,8 +275,8 @@ function person_check_cookie_token($token) {
  * Given a valid cookie TOKEN, return the duration for which it was issued.
  */
 function person_cookie_token_duration($token) {
-  [$x, $start, $duration] = explode('/', $token);
-  return $duration;
+    [$x, $start, $duration] = explode('/', $token);
+    return $duration;
 }
 
 /* Global variable storing the identity of any signed-on person. Since
@@ -294,50 +294,50 @@ $person_signed_on = NULL;
  * unless NORENEW is set.
  */
 function person_if_signed_on($norenew = FALSE) {
-  global $person_signed_on;
-  if (!is_null($person_signed_on)) {
-    return $person_signed_on;
-  }
-  if (array_key_exists('pb_person_id', $_COOKIE)) {
-    /* User has a cookie and may be logged in. */
-    $id = person_check_cookie_token($_COOKIE['pb_person_id']);
-    if (!is_null($id)) {
-      $P = new Person($id);
-      if (!$norenew) {
-        /* Valid, so renew the cookie. */
-        // XXX: This turns all session cookies into one-year ones!
-        $duration = person_cookie_token_duration($_COOKIE['pb_person_id']);
-        setcookie('pb_person_id', person_cookie_token($id, $duration), time() + $duration, '/', person_cookie_domain());
-        $person_signed_on = $P; /* save this here so we will renew the cookie on a later call to this function without NORENEW */
-      }
-      return $P;
+    global $person_signed_on;
+    if (!is_null($person_signed_on)) {
+        return $person_signed_on;
     }
-  }
-  return NULL;
+    if (array_key_exists('pb_person_id', $_COOKIE)) {
+        /* User has a cookie and may be logged in. */
+        $id = person_check_cookie_token($_COOKIE['pb_person_id']);
+        if (!is_null($id)) {
+            $P = new Person($id);
+            if (!$norenew) {
+                /* Valid, so renew the cookie. */
+                // XXX: This turns all session cookies into one-year ones!
+                $duration = person_cookie_token_duration($_COOKIE['pb_person_id']);
+                setcookie('pb_person_id', person_cookie_token($id, $duration), time() + $duration, '/', person_cookie_domain());
+                $person_signed_on = $P; /* save this here so we will renew the cookie on a later call to this function without NORENEW */
+            }
+            return $P;
+        }
+    }
+    return NULL;
 }
 
 /**
  *
  */
 function person_already_signed_on($email, $name, $person_if_signed_on_function = NULL) {
-  if (!is_null($email) && !validate_email($email)) {
-    err("'$email' is not a valid email address");
-  }
-
-  if ($person_if_signed_on_function) {
-    $P = $person_if_signed_on_function();
-  }
-  else {
-    $P = person_if_signed_on();
-  }
-  if (!is_null($P) && (is_null($email) || strtolower($P->email()) == strtolower($email))) {
-    if (!is_null($name) && !$P->matches_name($name)) {
-      $P->name($name);
+    if (!is_null($email) && !validate_email($email)) {
+        err("'$email' is not a valid email address");
     }
-    return $P;
-  }
 
-  return NULL;
+    if ($person_if_signed_on_function) {
+        $P = $person_if_signed_on_function();
+    }
+    else {
+        $P = person_if_signed_on();
+    }
+    if (!is_null($P) && (is_null($email) || strtolower($P->email()) == strtolower($email))) {
+        if (!is_null($name) && !$P->matches_name($name)) {
+            $P->name($name);
+        }
+        return $P;
+    }
+
+    return NULL;
 }
 
 /**
@@ -378,44 +378,44 @@ function person_already_signed_on($email, $name, $person_if_signed_on_function =
  *
  */
 function person_signon($template_data, $email = NULL, $name = NULL, $person_if_signed_on_function = NULL) {
-  $P = person_already_signed_on($email, $name, $person_if_signed_on_function);
-  if ($P) {
-    return $P;
-  }
+    $P = person_already_signed_on($email, $name, $person_if_signed_on_function);
+    if ($P) {
+        return $P;
+    }
 
-  /* Get rid of any previous cookie -- if user is logging in again under a
-   * different email, we don't want to remember the old one. */
-  person_signoff();
+    /* Get rid of any previous cookie -- if user is logging in again under a
+     * different email, we don't want to remember the old one. */
+    person_signoff();
 
-  if (headers_sent()) {
-    err("Headers have already been sent in person_signon without cookie being present");
-  }
+    if (headers_sent()) {
+        err("Headers have already been sent in person_signon without cookie being present");
+    }
 
-  if (array_key_exists('instantly_send_email', $template_data)) {
-    $send_email_part = "&SendEmail=1";
-    unset($template_data['instantly_send_email']);
-  }
-  else {
-    $send_email_part = '';
-  }
-  /* No or invalid cookie. We will need to redirect the user via another
-   * page, either to log in or to prove their email address. */
-  $st = stash_request(rabx_serialise($template_data), $email);
-  db_commit();
-  if ($email) {
-    $email_part = "&email=" . urlencode($email);
-  }
-  else {
-    $email_part = "";
-  }
-  if ($name) {
-    $name_part = "&name=" . urlencode($name);
-  }
-  else {
-    $name_part = "";
-  }
-  header("Location: /login?stash=$st$send_email_part$email_part$name_part");
-  exit();
+    if (array_key_exists('instantly_send_email', $template_data)) {
+        $send_email_part = "&SendEmail=1";
+        unset($template_data['instantly_send_email']);
+    }
+    else {
+        $send_email_part = '';
+    }
+    /* No or invalid cookie. We will need to redirect the user via another
+     * page, either to log in or to prove their email address. */
+    $st = stash_request(rabx_serialise($template_data), $email);
+    db_commit();
+    if ($email) {
+        $email_part = "&email=" . urlencode($email);
+    }
+    else {
+        $email_part = "";
+    }
+    if ($name) {
+        $name_part = "&name=" . urlencode($name);
+    }
+    else {
+        $name_part = "";
+    }
+    header("Location: /login?stash=$st$send_email_part$email_part$name_part");
+    exit();
 }
 
 /**
@@ -423,11 +423,11 @@ function person_signon($template_data, $email = NULL, $name = NULL, $person_if_s
  * Log out anyone who is logged in
  */
 function person_signoff() {
-  setcookie('pb_person_id', '', 0, '/', person_cookie_domain());
-  // Remove old style cookies left around too.
-  if (person_cookie_domain() != OPTION_WEB_DOMAIN) {
-    setcookie('pb_person_id', '', 0, '/', '.' . OPTION_WEB_DOMAIN);
-  }
+    setcookie('pb_person_id', '', 0, '/', person_cookie_domain());
+    // Remove old style cookies left around too.
+    if (person_cookie_domain() != OPTION_WEB_DOMAIN) {
+        setcookie('pb_person_id', '', 0, '/', '.' . OPTION_WEB_DOMAIN);
+    }
 }
 
 /**
@@ -439,19 +439,19 @@ function person_signoff() {
  * its own email to send).
  */
 function person_make_signon_url($data, $email, $method, $url, $params, $url_base = NULL) {
-  if (!$url_base) {
-    $url_base = OPTION_BASE_URL . "/";
-  }
+    if (!$url_base) {
+        $url_base = OPTION_BASE_URL . "/";
+    }
 
-  $st = stash_new_request($method, $url, $params, $data);
-  /* XXX should combine this and the similar code in login.php. */
-  $token = auth_token_store('login', [
+    $st = stash_new_request($method, $url, $params, $data);
+    /* XXX should combine this and the similar code in login.php. */
+    $token = auth_token_store('login', [
                     'email' => $email,
                     'name' => NULL,
                     'stash' => $st,
                     'direct' => 1
                 ]);
-  return $url_base . "L/$token";
+    return $url_base . "L/$token";
 }
 
 /**
@@ -460,13 +460,13 @@ function person_make_signon_url($data, $email, $method, $url, $params, $url_base
  * exists, or null otherwise.
  */
 function person_get($email) {
-  $id = db_getOne('select id from person where lower(email) = ? for update', strtolower($email));
-  if (is_null($id)) {
-    return NULL;
-  }
-  else {
-    return new Person($id);
-  }
+    $id = db_getOne('select id from person where lower(email) = ? for update', strtolower($email));
+    if (is_null($id)) {
+        return NULL;
+    }
+    else {
+        return new Person($id);
+    }
 }
 
 /**
@@ -476,14 +476,14 @@ function person_get($email) {
  * NAME, and return the object describing it.
  */
 function person_get_or_create($email, $name = NULL) {
-  if (is_null($email)) {
-    err('EMAIL null in person_get_or_create');
-  }
-  $id = db_getOne('select id from person where lower(email) = ?', strtolower($email));
-  if (is_null($id)) {
-    db_query('lock table person in share mode');    /* Guard against double-insert. */
-    $id = db_getOne("select nextval('person_id_seq')");
-    db_query('insert into person (id, email, name) values (?, ?, ?)', [$id, $email, $name]);
-  }
-  return new Person($id);
+    if (is_null($email)) {
+        err('EMAIL null in person_get_or_create');
+    }
+    $id = db_getOne('select id from person where lower(email) = ?', strtolower($email));
+    if (is_null($id)) {
+        db_query('lock table person in share mode');    /* Guard against double-insert. */
+        $id = db_getOne("select nextval('person_id_seq')");
+        db_query('insert into person (id, email, name) values (?, ?, ?)', [$id, $email, $name]);
+    }
+    return new Person($id);
 }

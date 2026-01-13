@@ -24,32 +24,32 @@ $sxr_clients = [];
  * Return whatever the method returns on success, or FALSE on failure.
  */
 function sxr_call($host, $port, $path, $func, $params) {
-  debug(XMLRPC, "SXR calling $func via http://$host:$port/$path");
-  global $sxr_clients;
-  $key = "$host:$port/$path";
-  if (!array_key_exists($key, $sxr_clients)) {
-    $sxr_clients[$key] = new XML_RPC_Client($path, $host, $port);
-  }
-
-  $p = [];
-  if (is_array($params)) {
-    foreach ($params as $i) {
-      array_push($p, XML_RPC_encode($i));
+    debug(XMLRPC, "SXR calling $func via http://$host:$port/$path");
+    global $sxr_clients;
+    $key = "$host:$port/$path";
+    if (!array_key_exists($key, $sxr_clients)) {
+        $sxr_clients[$key] = new XML_RPC_Client($path, $host, $port);
     }
-  }
-  else {
-    $p[0] = $params;
-  }
 
-  $req = new XML_RPC_Message($func, $p);
-  $resp = $sxr_clients[$key]->send($req);
+    $p = [];
+    if (is_array($params)) {
+        foreach ($params as $i) {
+            array_push($p, XML_RPC_encode($i));
+        }
+    }
+    else {
+        $p[0] = $params;
+    }
 
-  if ($resp->faultCode()) {
-    return FALSE;
-  }
-  else {
-    return XML_RPC_decode($resp->value());
-  }
+    $req = new XML_RPC_Message($func, $p);
+    $resp = $sxr_clients[$key]->send($req);
+
+    if ($resp->faultCode()) {
+        return FALSE;
+    }
+    else {
+        return XML_RPC_decode($resp->value());
+    }
 }
 
 /**
