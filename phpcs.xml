@@ -23,6 +23,13 @@
     <exclude name="Drupal.NamingConventions.ValidVariableName"/>
   </rule>
 
+  <!-- Override some settings -->
+  <rule ref="Drupal.WhiteSpace.ScopeIndent">
+    <properties>
+      <property name="indent" value="4"/>
+    </properties>
+  </rule>
+
   <!--Exclude third party code.-->
   <exclude-pattern>./vendor/*</exclude-pattern>
 
