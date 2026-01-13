@@ -13,45 +13,45 @@
  */
 class ADMIN_PAGE_CONFIGINFO {
 
-  public $id;
+    public $id;
 
-  public $navname;
+    public $navname;
 
-  /**
-   *
-   */
-  public function __construct() {
-    $this->id = "confinfo";
-    $this->navname = "Configuration Values";
-  }
-
-  /**
-   *
-   */
-  public function run($command) {
-    ob_start();
-    passthru($command);
-    $ret = ob_get_contents();
-    ob_end_clean();
-    return "<tr><td><p><pre>$ret</pre></td></tr>";
-  }
-
-  /**
-   *
-   */
-  public function display($self_link) {
-    $form = new HTML_QuickForm('adminConfigInfoForm', 'get', $self_link);
-
-    $consts = get_defined_constants();
-
-    $form->addElement('header', '', 'Configuration Settings (from conf/general)');
-    foreach ($consts as $const => $value) {
-      if (preg_match("/^OPTION_/", $const)) {
-        $form->addElement('static', "static$const", NULL, "$const = $value");
-      }
+    /**
+     *
+     */
+    public function __construct() {
+        $this->id = "confinfo";
+        $this->navname = "Configuration Values";
     }
 
-    admin_render_form($form);
-  }
+    /**
+     *
+     */
+    public function run($command) {
+        ob_start();
+        passthru($command);
+        $ret = ob_get_contents();
+        ob_end_clean();
+        return "<tr><td><p><pre>$ret</pre></td></tr>";
+    }
+
+    /**
+     *
+     */
+    public function display($self_link) {
+        $form = new HTML_QuickForm('adminConfigInfoForm', 'get', $self_link);
+
+        $consts = get_defined_constants();
+
+        $form->addElement('header', '', 'Configuration Settings (from conf/general)');
+        foreach ($consts as $const => $value) {
+            if (preg_match("/^OPTION_/", $const)) {
+                $form->addElement('static', "static$const", NULL, "$const = $value");
+            }
+        }
+
+        admin_render_form($form);
+    }
 
 }

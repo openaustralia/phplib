@@ -434,12 +434,12 @@ which include <strong>agriculture</strong>, <strong>education</strong>,
  * Does ID refer to a test area (i.e., one invented for our own purposes)?
  */
 function va_is_fictional_area($id) {
-  if ($id >= 1000001 && $id <= 1000008) {
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
+    if ($id >= 1000001 && $id <= 1000008) {
+        return TRUE;
+    }
+    else {
+        return FALSE;
+    }
 }
 
 /* Special area IDs (see perllib/mysociety/VotingArea.pm for more) */

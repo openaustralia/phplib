@@ -21,12 +21,12 @@ require_once 'rabx.php';
  * Return FALSE if R indicates success, or an error string otherwise.
  */
 function gaze_get_error($e) {
-  if (!rabx_is_error($e)) {
-    return FALSE;
-  }
-  else {
-    return $e->text;
-  }
+    if (!rabx_is_error($e)) {
+        return FALSE;
+    }
+    else {
+        return $e->text;
+    }
 }
 
 /**
@@ -34,13 +34,13 @@ function gaze_get_error($e) {
  * If R indicates failure, displays error message and stops procesing.
  */
 function gaze_check_error($data) {
-  if ($error_message = gaze_get_error($data)) {
-    err($error_message);
-  }
+    if ($error_message = gaze_get_error($data)) {
+        err($error_message);
+    }
 }
 
 if (defined('OPTION_GAZE_URL')) {
-  $gaze_client = new RABX_Client(OPTION_GAZE_URL,
+    $gaze_client = new RABX_Client(OPTION_GAZE_URL,
         defined('OPTION_GAZE_USERPWD') ? OPTION_GAZE_USERPWD : NULL);
 }
 
@@ -72,10 +72,10 @@ if (defined('OPTION_GAZE_URL')) {
  * On error, throws an exception.
  */
 function gaze_find_places($country, $state, $query, $maxresults = NULL, $minscore = NULL) {
-  global $gaze_client;
-  $params = func_get_args();
-  $result = $gaze_client->call('Gaze.find_places', $params);
-  return $result;
+    global $gaze_client;
+    $params = func_get_args();
+    $result = $gaze_client->call('Gaze.find_places', $params);
+    return $result;
 }
 
 /**
@@ -84,10 +84,10 @@ function gaze_find_places($country, $state, $query, $maxresults = NULL, $minscor
  * Return list of countries which find_places will work for.
  */
 function gaze_get_find_places_countries() {
-  global $gaze_client;
-  $params = func_get_args();
-  $result = $gaze_client->call('Gaze.get_find_places_countries', $params);
-  return $result;
+    global $gaze_client;
+    $params = func_get_args();
+    $result = $gaze_client->call('Gaze.get_find_places_countries', $params);
+    return $result;
 }
 
 /**
@@ -97,10 +97,10 @@ function gaze_get_find_places_countries() {
  * be found.
  */
 function gaze_get_country_from_ip($address) {
-  global $gaze_client;
-  $params = func_get_args();
-  $result = $gaze_client->call('Gaze.get_country_from_ip', $params);
-  return $result;
+    global $gaze_client;
+    $params = func_get_args();
+    $result = $gaze_client->call('Gaze.get_country_from_ip', $params);
+    return $result;
 }
 
 /**
@@ -110,10 +110,10 @@ function gaze_get_country_from_ip($address) {
  * or undef if none could be found.
  */
 function gaze_get_coords_from_ip($address) {
-  global $gaze_client;
-  $params = func_get_args();
-  $result = $gaze_client->call('Gaze.get_coords_from_ip', $params);
-  return $result;
+    global $gaze_client;
+    $params = func_get_args();
+    $result = $gaze_client->call('Gaze.get_coords_from_ip', $params);
+    return $result;
 }
 
 /**
@@ -123,10 +123,10 @@ function gaze_get_coords_from_ip($address) {
  * square kilometer.
  */
 function gaze_get_population_density($lat, $lon) {
-  global $gaze_client;
-  $params = func_get_args();
-  $result = $gaze_client->call('Gaze.get_population_density', $params);
-  return $result;
+    global $gaze_client;
+    $params = func_get_args();
+    $result = $gaze_client->call('Gaze.get_population_density', $params);
+    return $result;
 }
 
 /**
@@ -138,10 +138,10 @@ function gaze_get_population_density($lat, $lon) {
  * specified, use 150km.
  */
 function gaze_get_radius_containing_population($lat, $lon, $number, $maximum = NULL) {
-  global $gaze_client;
-  $params = func_get_args();
-  $result = $gaze_client->call('Gaze.get_radius_containing_population', $params);
-  return $result;
+    global $gaze_client;
+    $params = func_get_args();
+    $result = $gaze_client->call('Gaze.get_radius_containing_population', $params);
+    return $result;
 }
 
 /**
@@ -155,8 +155,8 @@ function gaze_get_radius_containing_population($lat, $lon, $number, $maximum = N
  * bound results to one COUNTRY Throws exception on error.
  */
 function gaze_get_places_near($lat, $lon, $params = NULL) {
-  global $gaze_client;
-  $params = func_get_args();
-  $result = $gaze_client->call('Gaze.get_places_near', $params);
-  return $result;
+    global $gaze_client;
+    $params = func_get_args();
+    $result = $gaze_client->call('Gaze.get_places_near', $params);
+    return $result;
 }

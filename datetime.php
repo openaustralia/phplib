@@ -23,33 +23,33 @@
  * Stolen from Matthew's railway script.
  */
 function datetime_parse_local_date($date, $now, $language, $country) {
-  $error = 0;
-  $date = preg_replace('#((\b([a-z]|on|an|of|in|the|year of our lord))|(?<=\d)(st|nd|rd|th))\b#', '', $date);
-  $date = str_replace(',', ' ', $date);
-  if (!$date) {
-    return NULL;
-  }
+    $error = 0;
+    $date = preg_replace('#((\b([a-z]|on|an|of|in|the|year of our lord))|(?<=\d)(st|nd|rd|th))\b#', '', $date);
+    $date = str_replace(',', ' ', $date);
+    if (!$date) {
+        return NULL;
+    }
 
-  $date = mb_strtolower($date, 'utf-8');
+    $date = mb_strtolower($date, 'utf-8');
 
-  if ($language == 'eo') {
-    $date = preg_replace('#((\b(de|la))|(?<=\d)-?a)\b#', '', $date);
-  }
-  if ($language == 'nl') {
-    $date = preg_replace('#(?<=\d)e\b#', '', $date);
-  }
-  if ($language == 'zh') {
-    $date = preg_replace("#\xe5\xb9\xb4|\xe6\x9c\x88#", '/', $date);
-    $date = preg_replace("#\xe6\x97\xa5#", '', $date);
-  }
+    if ($language == 'eo') {
+        $date = preg_replace('#((\b(de|la))|(?<=\d)-?a)\b#', '', $date);
+    }
+    if ($language == 'nl') {
+        $date = preg_replace('#(?<=\d)e\b#', '', $date);
+    }
+    if ($language == 'zh') {
+        $date = preg_replace("#\xe5\xb9\xb4|\xe6\x9c\x88#", '/', $date);
+        $date = preg_replace("#\xe6\x97\xa5#", '', $date);
+    }
 
-  $date = preg_replace('#^(\d+)\.(\d+)\.(\d+)$#', '$1/$2/$3', $date);
+    $date = preg_replace('#^(\d+)\.(\d+)\.(\d+)$#', '$1/$2/$3', $date);
 
-  // Remove dots, mainly for German format "23. Mai 2006".
-  $date = str_replace('.', '', $date);
+    // Remove dots, mainly for German format "23. Mai 2006".
+    $date = str_replace('.', '', $date);
 
-  // Translate foreign words to English as strtotime() is English only.
-  $translate = [
+    // Translate foreign words to English as strtotime() is English only.
+    $translate = [
         // Spanish,Italian,Portuguese,Welsh,Russian,Esperanto,Ukranian,Dutch,German,French.
         'Sunday' => ['domingo', 'domenica', 'dydd sul',
             'воскресенье', 'неділя', 'dimaĉo', 'zondag', 'dimanche',
@@ -119,91 +119,91 @@ function datetime_parse_local_date($date, $now, $language, $country) {
             'décembre',
         ]
     ];
-  $search = [];
-  $replace = [];
-  foreach ($translate as $english => $foreign) {
-    $search[] = '/(?:^|\s)(' . implode('|', $foreign) . ')(?:\s|$)/';
-    $replace[] = $english;
-  }
-  $date = preg_replace($search, $replace, $date);
+    $search = [];
+    $replace = [];
+    foreach ($translate as $english => $foreign) {
+        $search[] = '/(?:^|\s)(' . implode('|', $foreign) . ')(?:\s|$)/';
+        $replace[] = $english;
+    }
+    $date = preg_replace($search, $replace, $date);
 
-  $epoch = 0;
-  $day = NULL;
-  $year = NULL;
-  $month = NULL;
-  if (preg_match('#^(\d{1,2})/(\d{1,2})/(\d{1,4})#', $date, $m)) {
-    // XXX: Might be better to offer back ambiguous dates for clarification?
-    if ($country == 'US') {
-      $day = $m[2];
-      $month = $m[1];
+    $epoch = 0;
+    $day = NULL;
+    $year = NULL;
+    $month = NULL;
+    if (preg_match('#^(\d{1,2})/(\d{1,2})/(\d{1,4})#', $date, $m)) {
+        // XXX: Might be better to offer back ambiguous dates for clarification?
+        if ($country == 'US') {
+            $day = $m[2];
+            $month = $m[1];
+        }
+        else {
+            $day = $m[1];
+            $month = $m[2];
+        }
+        $year = $m[3];
+        if ($year < 100) {
+            $year += 2000;
+        }
+    }
+    elseif (preg_match('#(\d{4})/(\d{1,2})/(\d{1,2})#', $date, $m)) {
+        $year = $m[1];
+        $day = $m[3];
+        $month = $m[2];
+    }
+    elseif (preg_match('#(\d+)/(\d+)#', $date, $m)) {
+        if ($country == 'US') {
+            $day = $m[2];
+            $month = $m[1];
+        }
+        else {
+            $day = $m[1];
+            $month = $m[2];
+        }
+        $year = date('Y');
+    }
+    elseif (preg_match('#^([0123][0-9])([01][0-9])([0-9][0-9])$#', $date, $m)) {
+        $day = $m[1];
+        $month = $m[2];
+        $year = $m[3];
     }
     else {
-      $day = $m[1];
-      $month = $m[2];
+        // 0 Sunday, 6 Saturday
+        $dayofweek = date('w');
+        if (preg_match('#next\s+(sun|sunday|mon|monday|tue|tues|tuesday|wed|wednes|wednesday|thu|thur|thurs|thursday|fri|friday|sat|saturday)\b#i', $date, $m)) {
+            $date = preg_replace('#next#i', 'this', $date);
+            if ($dayofweek == 5) {
+                $now = strtotime('3 days', $now);
+            }
+            elseif ($dayofweek == 4) {
+                $now = strtotime('4 days', $now);
+            }
+            else {
+                $now = strtotime('5 days', $now);
+            }
+        }
+        $t = strtotime($date, $now);
+        if ($t != -1) {
+            $day = date('d', $t);
+            $month = date('m', $t);
+            $year = date('Y', $t);
+            $epoch = $t;
+        }
+        else {
+            $error = 1;
+        }
     }
-    $year = $m[3];
-    if ($year < 100) {
-      $year += 2000;
+    if (!$epoch && $day && $month && $year) {
+        $t = mktime(0, 0, 0, $month, $day, $year);
+        $day = date('d', $t);
+        $month = date('m', $t);
+        $year = date('Y', $t);
+        $epoch = $t;
     }
-  }
-  elseif (preg_match('#(\d{4})/(\d{1,2})/(\d{1,2})#', $date, $m)) {
-    $year = $m[1];
-    $day = $m[3];
-    $month = $m[2];
-  }
-  elseif (preg_match('#(\d+)/(\d+)#', $date, $m)) {
-    if ($country == 'US') {
-      $day = $m[2];
-      $month = $m[1];
-    }
-    else {
-      $day = $m[1];
-      $month = $m[2];
-    }
-    $year = date('Y');
-  }
-  elseif (preg_match('#^([0123][0-9])([01][0-9])([0-9][0-9])$#', $date, $m)) {
-    $day = $m[1];
-    $month = $m[2];
-    $year = $m[3];
-  }
-  else {
-    // 0 Sunday, 6 Saturday
-    $dayofweek = date('w');
-    if (preg_match('#next\s+(sun|sunday|mon|monday|tue|tues|tuesday|wed|wednes|wednesday|thu|thur|thurs|thursday|fri|friday|sat|saturday)\b#i', $date, $m)) {
-      $date = preg_replace('#next#i', 'this', $date);
-      if ($dayofweek == 5) {
-        $now = strtotime('3 days', $now);
-      }
-      elseif ($dayofweek == 4) {
-        $now = strtotime('4 days', $now);
-      }
-      else {
-        $now = strtotime('5 days', $now);
-      }
-    }
-    $t = strtotime($date, $now);
-    if ($t != -1) {
-      $day = date('d', $t);
-      $month = date('m', $t);
-      $year = date('Y', $t);
-      $epoch = $t;
-    }
-    else {
-      $error = 1;
-    }
-  }
-  if (!$epoch && $day && $month && $year) {
-    $t = mktime(0, 0, 0, $month, $day, $year);
-    $day = date('d', $t);
-    $month = date('m', $t);
-    $year = date('Y', $t);
-    $epoch = $t;
-  }
 
-  if ($epoch == 0) {
-    return NULL;
-  }
+    if ($epoch == 0) {
+        return NULL;
+    }
 
-  return ['iso' => "$year-$month-$day", 'epoch' => $epoch, 'day' => $day, 'month' => $month, 'year' => $year, 'error' => $error];
+    return ['iso' => "$year-$month-$day", 'epoch' => $epoch, 'day' => $day, 'month' => $month, 'year' => $year, 'error' => $error];
 }

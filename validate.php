@@ -23,12 +23,12 @@
  *
  */
 function validate_email($address) {
-  if (preg_match('/^([^()<>@,;:\\".\[\] \000-\037\177\200-\377]+(\s*\.\s*[^()<>@,;:\\".\[\] \000-\037\177\200-\377]+)*|"([^"\\\r\n\200-\377]|\.)*")\s*@\s*[A-Za-z0-9][A-Za-z0-9-]*(\s*\.\s*[A-Za-z0-9][A-Za-z0-9-]*)*$/', $address)) {
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
+    if (preg_match('/^([^()<>@,;:\\".\[\] \000-\037\177\200-\377]+(\s*\.\s*[^()<>@,;:\\".\[\] \000-\037\177\200-\377]+)*|"([^"\\\r\n\200-\377]|\.)*")\s*@\s*[A-Za-z0-9][A-Za-z0-9-]*(\s*\.\s*[A-Za-z0-9][A-Za-z0-9-]*)*$/', $address)) {
+        return TRUE;
+    }
+    else {
+        return FALSE;
+    }
 }
 
 /**
@@ -37,32 +37,32 @@ function validate_email($address) {
  * require spaces in the appropriate place.
  */
 function validate_postcode($postcode) {
-  // Our test postcode.
-  if (preg_match("/^zz9\s*9z[zy]$/i", $postcode)) {
-    return TRUE;
-  }
+    // Our test postcode.
+    if (preg_match("/^zz9\s*9z[zy]$/i", $postcode)) {
+        return TRUE;
+    }
 
-  // See http://www.govtalk.gov.uk/gdsc/html/noframes/PostCode-2-1-Release.htm
-  $in  = 'ABDEFGHJLNPQRSTUWXYZ';
-  $fst = 'ABCDEFGHIJKLMNOPRSTUWYZ';
-  $sec = 'ABCDEFGHJKLMNOPQRSTUVWXY';
-  $thd = 'ABCDEFGHJKSTUW';
-  $fth = 'ABEHMNPRVWXY';
-  $num = '0123456789';
-  $nom = '0123456789';
-  $gap = '\s\.';
+    // See http://www.govtalk.gov.uk/gdsc/html/noframes/PostCode-2-1-Release.htm
+    $in  = 'ABDEFGHJLNPQRSTUWXYZ';
+    $fst = 'ABCDEFGHIJKLMNOPRSTUWYZ';
+    $sec = 'ABCDEFGHJKLMNOPQRSTUVWXY';
+    $thd = 'ABCDEFGHJKSTUW';
+    $fth = 'ABEHMNPRVWXY';
+    $num = '0123456789';
+    $nom = '0123456789';
+    $gap = '\s\.';
 
-  if (preg_match("/^[$fst][$num][$gap]*[$nom][$in][$in]$/i", $postcode) ||
+    if (preg_match("/^[$fst][$num][$gap]*[$nom][$in][$in]$/i", $postcode) ||
         preg_match("/^[$fst][$num][$num][$gap]*[$nom][$in][$in]$/i", $postcode) ||
         preg_match("/^[$fst][$sec][$num][$gap]*[$nom][$in][$in]$/i", $postcode) ||
         preg_match("/^[$fst][$sec][$num][$num][$gap]*[$nom][$in][$in]$/i", $postcode) ||
         preg_match("/^[$fst][$num][$thd][$gap]*[$nom][$in][$in]$/i", $postcode) ||
         preg_match("/^[$fst][$sec][$num][$fth][$gap]*[$nom][$in][$in]$/i", $postcode)) {
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
+        return TRUE;
+    }
+    else {
+        return FALSE;
+    }
 }
 
 /**
@@ -70,27 +70,27 @@ function validate_postcode($postcode) {
  * Return true is POSTCODE is the first part of a UK postcode.  e.g. WC1.
  */
 function validate_partial_postcode($postcode) {
-  // Our test postcode.
-  if (preg_match("/^zz9/i", $postcode)) {
-    return TRUE;
-  }
+    // Our test postcode.
+    if (preg_match("/^zz9/i", $postcode)) {
+        return TRUE;
+    }
 
-  // See http://www.govtalk.gov.uk/gdsc/html/noframes/PostCode-2-1-Release.htm
-  $fst = 'ABCDEFGHIJKLMNOPRSTUWYZ';
-  $sec = 'ABCDEFGHJKLMNOPQRSTUVWXY';
-  $thd = 'ABCDEFGHJKSTUW';
-  $fth = 'ABEHMNPRVWXY';
-  $num = '0123456789';
+    // See http://www.govtalk.gov.uk/gdsc/html/noframes/PostCode-2-1-Release.htm
+    $fst = 'ABCDEFGHIJKLMNOPRSTUWYZ';
+    $sec = 'ABCDEFGHJKLMNOPQRSTUVWXY';
+    $thd = 'ABCDEFGHJKSTUW';
+    $fth = 'ABEHMNPRVWXY';
+    $num = '0123456789';
 
-  if (preg_match("/^[$fst][$num]$/i", $postcode) ||
+    if (preg_match("/^[$fst][$num]$/i", $postcode) ||
         preg_match("/^[$fst][$num][$num]$/i", $postcode) ||
         preg_match("/^[$fst][$sec][$num]$/i", $postcode) ||
         preg_match("/^[$fst][$sec][$num][$num]$/i", $postcode) ||
         preg_match("/^[$fst][$num][$thd]$/i", $postcode) ||
         preg_match("/^[$fst][$sec][$num][$fth]$/i", $postcode)) {
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
+        return TRUE;
+    }
+    else {
+        return FALSE;
+    }
 }

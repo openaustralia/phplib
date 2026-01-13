@@ -21,12 +21,12 @@ require_once 'rabx.php';
  * Return FALSE if R indicates success, or an error string otherwise.
  */
 function news_get_error($e) {
-  if (!rabx_is_error($e)) {
-    return FALSE;
-  }
-  else {
-    return $e->text;
-  }
+    if (!rabx_is_error($e)) {
+        return FALSE;
+    }
+    else {
+        return $e->text;
+    }
 }
 
 /**
@@ -34,13 +34,13 @@ function news_get_error($e) {
  * If R indicates failure, displays error message and stops procesing.
  */
 function news_check_error($data) {
-  if ($error_message = news_get_error($data)) {
-    err($error_message);
-  }
+    if ($error_message = news_get_error($data)) {
+        err($error_message);
+    }
 }
 
 if (defined('OPTION_NEWS_URL')) {
-  $news_client = new RABX_Client(OPTION_NEWS_URL,
+    $news_client = new RABX_Client(OPTION_NEWS_URL,
         defined('OPTION_NEWS_USERPWD') ? OPTION_NEWS_USERPWD : NULL);
 }
 
@@ -50,10 +50,10 @@ if (defined('OPTION_NEWS_URL')) {
  * Given a newspaper ID, returns information about that newspaper
  */
 function news_get_newspaper($id) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_newspaper', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_newspaper', $params);
+    return $result;
 }
 
 /**
@@ -62,10 +62,10 @@ function news_get_newspaper($id) {
  * Get a list of all the newspapers in the DB
  */
 function news_get_newspapers() {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_newspapers', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_newspapers', $params);
+    return $result;
 }
 
 /**
@@ -94,10 +94,10 @@ function news_get_newspapers() {
  * }
  */
 function news_get_newspapers_by_name() {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_newspapers_by_name', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_newspapers_by_name', $params);
+    return $result;
 }
 
 /**
@@ -107,10 +107,10 @@ function news_get_newspapers_by_name() {
  * and assigning the update to the username EDITOR.
  */
 function news_publish_newspaper_update($id, $editor, $hash) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.publish_newspaper_update', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.publish_newspaper_update', $params);
+    return $result;
 }
 
 /**
@@ -120,10 +120,10 @@ function news_publish_newspaper_update($id, $editor, $hash) {
  * record in the database
  */
 function news_get_newspaper_history($id) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_newspaper_history', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_newspaper_history', $params);
+    return $result;
 }
 
 /**
@@ -133,10 +133,10 @@ function news_get_newspaper_history($id) {
  * containing the coverage information related to that newspaper
  */
 function news_get_newspaper_coverage($id) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_newspaper_coverage', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_newspaper_coverage', $params);
+    return $result;
 }
 
 /**
@@ -146,10 +146,10 @@ function news_get_newspaper_coverage($id) {
  * containing the journalist information associated with that newspaper
  */
 function news_get_newspaper_journalists($id) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_newspaper_journalists', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_newspaper_journalists', $params);
+    return $result;
 }
 
 /**
@@ -160,10 +160,10 @@ function news_get_newspaper_journalists($id) {
  * point defined by the latitude and longitude
  */
 function news_get_locations_by_location($lon, $lat, $radius) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_locations_by_location', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_locations_by_location', $params);
+    return $result;
 }
 
 /**
@@ -175,10 +175,10 @@ function news_get_locations_by_location($lon, $lat, $radius) {
  * longitude
  */
 function news_get_newspapers_by_location($lon, $lat, $radius) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_newspapers_by_location', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_newspapers_by_location', $params);
+    return $result;
 }
 
 /**
@@ -187,10 +187,10 @@ function news_get_newspapers_by_location($lon, $lat, $radius) {
  * Given a journalist ID, return a hash of information about that journalist
  */
 function news_get_journalist($id) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_journalist', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_journalist', $params);
+    return $result;
 }
 
 /**
@@ -210,10 +210,10 @@ function news_get_journalist($id) {
  * }
  */
 function news_publish_journalist_update($editor, $hash) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.publish_journalist_update', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.publish_journalist_update', $params);
+    return $result;
 }
 
 /**
@@ -223,8 +223,8 @@ function news_publish_journalist_update($editor, $hash) {
  * record in the database
  */
 function news_get_journalist_history($id) {
-  global $news_client;
-  $params = func_get_args();
-  $result = $news_client->call('NeWs.get_journalist_history', $params);
-  return $result;
+    global $news_client;
+    $params = func_get_args();
+    $result = $news_client->call('NeWs.get_journalist_history', $params);
+    return $result;
 }

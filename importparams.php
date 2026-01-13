@@ -39,140 +39,140 @@ require_once "utility.php";
  *
  */
 function importparams() {
-  global $lang;
-  $i = 0;
-  $errors = [];
-  $valid = [];
-  for ($i = 0; $i < func_num_args(); ++$i) {
-    $pp = func_get_arg($i);
-    if (!is_array($pp) || count($pp) < 2 || count($pp) > 4) {
-      err("each SPEC must be an array of 2, 3 or 4 elements");
+    global $lang;
+    $i = 0;
+    $errors = [];
+    $valid = [];
+    for ($i = 0; $i < func_num_args(); ++$i) {
+        $pp = func_get_arg($i);
+        if (!is_array($pp) || count($pp) < 2 || count($pp) > 4) {
+            err("each SPEC must be an array of 2, 3 or 4 elements");
+        }
+
+        $allow_changes = FALSE;
+        $name = $pp[0];
+        if (is_array($name)) {
+            $allow_changes = $name[1];
+            $name = $name[0];
+        }
+
+        if (!is_string($name)) {
+            err("PARAMETER should be a string");
+        }
+
+        /* Obtain parameter value. */
+        if (array_key_exists($name, $_POST)) {
+            $val = $_POST[$name];
+            if (!is_array($val)) {
+                $val = trim($val);
+            }
+        }
+        elseif (array_key_exists($name, $_GET)) {
+            $val = $_GET[$name];
+            if (!is_array($val)) {
+                $val = trim($val);
+            }
+        }
+        else {
+            $val = NULL;
+        }
+        if (!is_null($val) && $allow_changes && $lang == 'eo') {
+            $val = input_esperanto($val);
+        }
+
+        $check = $pp[1];
+        $error = NULL;
+        $have_default = FALSE;
+        if (is_callable($check)) {
+            if (count($pp) == 4) {
+                err("If CHECK is a function it should only be followed by an optional DEFAULT");
+            }
+            elseif (count($pp) == 3) {
+                $default = $pp[2];
+                $have_default = TRUE;
+            }
+        }
+        elseif (is_string($check)) {
+            if (preg_match($check, '') === FALSE) {
+                err("If CHECK is a string, it must be a valid PCRE regular expression, not '$check'");
+            }
+            elseif (count($pp) < 3 || !is_string($pp[2])) {
+                err("If CHECK is a regular expression, it must be followed by an ERROR string");
+            }
+            if (count($pp) == 4) {
+                $default = $pp[3];
+                $have_default = TRUE;
+            }
+        }
+        else {
+            err("CHECK should be callable or a string");
+        }
+
+        if (is_null($val)) {
+            if ($have_default) {
+                $val = $default;
+            }
+            else {
+                $error = "Missing parameter '$name'";
+            }
+        }
+        else {
+            if (is_callable($check)) {
+                $error = $check($val);
+            }
+            elseif (is_string($check) && 0 == preg_match($check, $val)) {
+                $error = $pp[2];
+            }
+        }
+
+        eval("global \$q_$name;");
+        eval("global \$q_h_$name;");
+        if (!is_null($error)) {
+            $errors[$name] = $error;
+        }
+        else {
+            eval("\$q_$name = \$val;");
+            eval("\$q_h_$name = htmlspecialchars(\$val);");
+        }
+
+        eval("global \$q_unchecked_$name;");
+        eval("global \$q_unchecked_h_$name;");
+        if (is_null($val)) {
+            $val = '';
+        }
+        eval("\$q_unchecked_$name = \$val;");
+        eval("\$q_unchecked_h_$name = htmlspecialchars(\$val);");
     }
 
-    $allow_changes = FALSE;
-    $name = $pp[0];
-    if (is_array($name)) {
-      $allow_changes = $name[1];
-      $name = $name[0];
-    }
-
-    if (!is_string($name)) {
-      err("PARAMETER should be a string");
-    }
-
-    /* Obtain parameter value. */
-    if (array_key_exists($name, $_POST)) {
-      $val = $_POST[$name];
-      if (!is_array($val)) {
-        $val = trim($val);
-      }
-    }
-    elseif (array_key_exists($name, $_GET)) {
-      $val = $_GET[$name];
-      if (!is_array($val)) {
-        $val = trim($val);
-      }
+    if (count($errors) > 0) {
+        return $errors;
     }
     else {
-      $val = NULL;
+        return NULL;
     }
-    if (!is_null($val) && $allow_changes && $lang == 'eo') {
-      $val = input_esperanto($val);
-    }
-
-    $check = $pp[1];
-    $error = NULL;
-    $have_default = FALSE;
-    if (is_callable($check)) {
-      if (count($pp) == 4) {
-        err("If CHECK is a function it should only be followed by an optional DEFAULT");
-      }
-      elseif (count($pp) == 3) {
-        $default = $pp[2];
-        $have_default = TRUE;
-      }
-    }
-    elseif (is_string($check)) {
-      if (preg_match($check, '') === FALSE) {
-        err("If CHECK is a string, it must be a valid PCRE regular expression, not '$check'");
-      }
-      elseif (count($pp) < 3 || !is_string($pp[2])) {
-        err("If CHECK is a regular expression, it must be followed by an ERROR string");
-      }
-      if (count($pp) == 4) {
-        $default = $pp[3];
-        $have_default = TRUE;
-      }
-    }
-    else {
-      err("CHECK should be callable or a string");
-    }
-
-    if (is_null($val)) {
-      if ($have_default) {
-        $val = $default;
-      }
-      else {
-        $error = "Missing parameter '$name'";
-      }
-    }
-    else {
-      if (is_callable($check)) {
-        $error = $check($val);
-      }
-      elseif (is_string($check) && 0 == preg_match($check, $val)) {
-        $error = $pp[2];
-      }
-    }
-
-    eval("global \$q_$name;");
-    eval("global \$q_h_$name;");
-    if (!is_null($error)) {
-      $errors[$name] = $error;
-    }
-    else {
-      eval("\$q_$name = \$val;");
-      eval("\$q_h_$name = htmlspecialchars(\$val);");
-    }
-
-    eval("global \$q_unchecked_$name;");
-    eval("global \$q_unchecked_h_$name;");
-    if (is_null($val)) {
-      $val = '';
-    }
-    eval("\$q_unchecked_$name = \$val;");
-    eval("\$q_unchecked_h_$name = htmlspecialchars(\$val);");
-  }
-
-  if (count($errors) > 0) {
-    return $errors;
-  }
-  else {
-    return NULL;
-  }
 }
 
 /**
  *
  */
 function importparams_validate_postcode($pc) {
-  $pc = canonicalise_postcode($pc);
-  if (validate_postcode($pc)) {
-    return NULL;
-  }
-  else {
-    return "Please enter a valid postcode, such as OX1 3DR";
-  }
+    $pc = canonicalise_postcode($pc);
+    if (validate_postcode($pc)) {
+        return NULL;
+    }
+    else {
+        return "Please enter a valid postcode, such as OX1 3DR";
+    }
 }
 
 /**
  *
  */
 function importparams_validate_email($email) {
-  if (validate_email($email)) {
-    return NULL;
-  }
-  else {
-    return gettext("Please enter a valid email address");
-  }
+    if (validate_email($email)) {
+        return NULL;
+    }
+    else {
+        return gettext("Please enter a valid email address");
+    }
 }

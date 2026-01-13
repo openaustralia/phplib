@@ -22,27 +22,27 @@
  * null to force negotiation of language from browser, using HTTP headers.
  */
 function locale_negotiate_language($available_language_config, $override_langage) {
-  global $langs, $langmap, $lang;
+    global $langs, $langmap, $lang;
 
-  $opt_langs = explode('|', $available_language_config);
-  $langs = [];
-  $langmap = [];
-  foreach ($opt_langs as $opt_lang) {
-    [$code, $verbose, $locale] = explode(',', $opt_lang);
-    $langs[$code] = $verbose;
-    $langmap[$code] = $locale;
-  }
-  if ($override_langage && array_key_exists($override_langage, $langs)) {
-    $lang = $override_langage;
-  }
-  else {
-    // Local copy, see further down this file.
-    $lang = negotiateLanguage($langs);
-    if ($lang == 'en-US' || !$lang || !array_key_exists($lang, $langmap)) {
-      // Default override.
-      $lang = 'en-gb';
+    $opt_langs = explode('|', $available_language_config);
+    $langs = [];
+    $langmap = [];
+    foreach ($opt_langs as $opt_lang) {
+        [$code, $verbose, $locale] = explode(',', $opt_lang);
+        $langs[$code] = $verbose;
+        $langmap[$code] = $locale;
     }
-  }
+    if ($override_langage && array_key_exists($override_langage, $langs)) {
+        $lang = $override_langage;
+    }
+    else {
+        // Local copy, see further down this file.
+        $lang = negotiateLanguage($langs);
+        if ($lang == 'en-US' || !$lang || !array_key_exists($lang, $langmap)) {
+            // Default override.
+            $lang = 'en-gb';
+        }
+    }
 }
 
 /* Note: To get a language working from PHP on Unix, you also need
@@ -60,25 +60,25 @@ $locale_current = NULL;
  *
  */
 function locale_change($l = "") {
-  global $langmap, $lang, $locale_current;
-  if ($l == "") {
-    $l = $lang;
-  }
-  if ($l == $locale_current) {
-    return;
-  }
-  // Clear this if set.
-  putenv('LANGUAGE=');
-  putenv('LANG=' . $langmap[$l] . '.UTF-8');
-  $os_locale = $langmap[$l] . '.UTF-8';
-  $ret = setlocale(LC_ALL, $os_locale);
-  if ($ret != $os_locale) {
-    err("setlocale failed for $os_locale");
-  }
-  $locale_current = $l;
-  // Clear gettext's cache - you have to do this when
-  // you change environment variables.
-  textdomain(textdomain(NULL));
+    global $langmap, $lang, $locale_current;
+    if ($l == "") {
+        $l = $lang;
+    }
+    if ($l == $locale_current) {
+        return;
+    }
+    // Clear this if set.
+    putenv('LANGUAGE=');
+    putenv('LANG=' . $langmap[$l] . '.UTF-8');
+    $os_locale = $langmap[$l] . '.UTF-8';
+    $ret = setlocale(LC_ALL, $os_locale);
+    if ($ret != $os_locale) {
+        err("setlocale failed for $os_locale");
+    }
+    $locale_current = $l;
+    // Clear gettext's cache - you have to do this when
+    // you change environment variables.
+    textdomain(textdomain(NULL));
 }
 
 /* locale_push LANG, locale_pop
@@ -90,18 +90,18 @@ $locale_stack = [];
  *
  */
 function locale_push($l) {
-  global $locale_stack, $locale_current;
-  array_push($locale_stack, $locale_current);
-  locale_change($l);
+    global $locale_stack, $locale_current;
+    array_push($locale_stack, $locale_current);
+    locale_change($l);
 }
 
 /**
  *
  */
 function locale_pop() {
-  global $locale_stack;
-  $l = array_pop($locale_stack);
-  locale_change($l);
+    global $locale_stack;
+    $l = array_pop($locale_stack);
+    locale_change($l);
 }
 
 /**
@@ -109,52 +109,52 @@ function locale_pop() {
  * Set gettext domain. e.g. 'PledgeBank'
  */
 function locale_gettext_domain($domain) {
-  bindtextdomain($domain, '../../locale');
-  textdomain($domain);
-  bind_textdomain_codeset($domain, 'UTF-8');
+    bindtextdomain($domain, '../../locale');
+    textdomain($domain);
+    bind_textdomain_codeset($domain, 'UTF-8');
 }
 
 /**
  * PHP's own negotiateLanguage in HTTP.php is broken in old versions, so we use a copy.
  */
 function negotiateLanguage(&$supported) {
-  $supported = array_change_key_case($supported, CASE_LOWER);
-  if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-    $accepted = preg_split('/\s*,\s*/', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])));
-    for ($i = 0; $i < count($accepted); $i++) {
-      if (preg_match('/^([a-z_-]+);\s*q=([\d\.]+)/', $accepted[$i], $arr)) {
-        $q = (double) $arr[2];
-        $l = $arr[1];
-      }
-      else {
-        $q = 1;
-        $l = $accepted[$i];
-      }
-      if ($q > 0.0) {
-        if (!empty($supported[$l])) {
-          if ($q == 1) {
-            return $l;
-          }
-          $candidates[$l] = $q;
-        }
-        else {
-          $l = preg_quote($l, '/');
-          foreach (array_keys($supported) as $value) {
-            if (preg_match("/^$l-/", $value)) {
-              if ($q == 1) {
-                return $value;
-              }
-              $candidates[$value] = $q;
-              break;
+    $supported = array_change_key_case($supported, CASE_LOWER);
+    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        $accepted = preg_split('/\s*,\s*/', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])));
+        for ($i = 0; $i < count($accepted); $i++) {
+            if (preg_match('/^([a-z_-]+);\s*q=([\d\.]+)/', $accepted[$i], $arr)) {
+                $q = (double) $arr[2];
+                $l = $arr[1];
             }
-          }
+            else {
+                $q = 1;
+                $l = $accepted[$i];
+            }
+            if ($q > 0.0) {
+                if (!empty($supported[$l])) {
+                    if ($q == 1) {
+                        return $l;
+                    }
+                    $candidates[$l] = $q;
+                }
+                else {
+                    $l = preg_quote($l, '/');
+                    foreach (array_keys($supported) as $value) {
+                        if (preg_match("/^$l-/", $value)) {
+                            if ($q == 1) {
+                                return $value;
+                            }
+                            $candidates[$value] = $q;
+                            break;
+                        }
+                    }
+                }
+            }
         }
-      }
+        if (isset($candidates)) {
+            arsort($candidates);
+            reset($candidates);
+            return key($candidates);
+        }
     }
-    if (isset($candidates)) {
-      arsort($candidates);
-      reset($candidates);
-      return key($candidates);
-    }
-  }
 }

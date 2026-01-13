@@ -23,9 +23,9 @@ require_once dirname(__FILE__) . '/BaseN.php';
  *
  */
 function auth_ab64_encode($i) {
-  $t = basen_encodefast(57, $i);
-  $t = str_replace(['O', '0', '1', 'I', 'l'], ['5', '6', '7', '8', '9'], $t);
-  return $t;
+    $t = basen_encodefast(57, $i);
+    $t = str_replace(['O', '0', '1', 'I', 'l'], ['5', '6', '7', '8', '9'], $t);
+    return $t;
 }
 
 /**
@@ -33,8 +33,8 @@ function auth_ab64_encode($i) {
  * Returns a random token.
  */
 function auth_random_token() {
-  $token = auth_ab64_encode(urandom_bytes(12));
-  return $token;
+    $token = auth_ab64_encode(urandom_bytes(12));
+    return $token;
 }
 
 /**
@@ -45,13 +45,13 @@ function auth_random_token() {
  * retrieval with auth_token_retrieve.
  */
 function auth_token_store($scope, $data) {
-  $token = auth_random_token();
-  $ser = '';
-  rabx_wire_wr($data, $ser);
-  db_query('
+    $token = auth_random_token();
+    $ser = '';
+    rabx_wire_wr($data, $ser);
+    db_query('
             insert into token (scope, token, data, created)
             values (?, ?, ?, ms_current_timestamp())', [$scope, $token, $ser]);
-  return $token;
+    return $token;
 }
 
 /**
@@ -60,25 +60,25 @@ function auth_token_store($scope, $data) {
  * return the DATA associated with it, raising an error if there isn't one.
  */
 function auth_token_retrieve($scope, $token) {
-  $data = db_getOne('
+    $data = db_getOne('
                     select data
                     from token
                     where scope = ? and token = ?', [$scope, $token]);
 
-  /* Madness. We have to unescape this, because the PEAR DB library isn't
-   * smart enough to spot BYTEA columns and do it for us. */
-  $data = pg_unescape_bytea($data);
+    /* Madness. We have to unescape this, because the PEAR DB library isn't
+     * smart enough to spot BYTEA columns and do it for us. */
+    $data = pg_unescape_bytea($data);
 
-  $pos = 0;
-  $res = rabx_wire_rd($data, $pos);
-  if (rabx_is_error($res)) {
-    $res = unserialize($data);
-    if (is_null($res)) {
-      err("Data for scope '$scope', token '$token' are not valid");
+    $pos = 0;
+    $res = rabx_wire_rd($data, $pos);
+    if (rabx_is_error($res)) {
+        $res = unserialize($data);
+        if (is_null($res)) {
+            err("Data for scope '$scope', token '$token' are not valid");
+        }
     }
-  }
 
-  return $res;
+    return $res;
 }
 
 /**
@@ -86,7 +86,7 @@ function auth_token_retrieve($scope, $token) {
  * Delete any data associated with TOKEN in the given SCOPE.
  */
 function auth_token_destroy($scope, $token) {
-  db_query('delete from token where scope = ? and token = ?',
+    db_query('delete from token where scope = ? and token = ?',
             [$scope, $token]);
 }
 
@@ -97,9 +97,9 @@ function auth_token_destroy($scope, $token) {
  * to check it.
  */
 function auth_sign_with_shared_secret($item, $secret) {
-  $salt = bin2hex(urandom_bytes(8));
-  $sha = sha1("$salt-$secret-$item");
-  return "$sha-$salt";
+    $salt = bin2hex(urandom_bytes(8));
+    $sha = sha1("$salt-$secret-$item");
+    return "$sha-$salt";
 }
 
 /**
@@ -109,13 +109,13 @@ function auth_sign_with_shared_secret($item, $secret) {
  * to make the SIGNATURE.
  */
 function auth_verify_with_shared_secret($item, $secret, $signature) {
-  if (!preg_match('#^([0-9a-f]+)-([0-9a-f]+)$#', $signature, $matches)) {
+    if (!preg_match('#^([0-9a-f]+)-([0-9a-f]+)$#', $signature, $matches)) {
+        return FALSE;
+    }
+    [$dummy, $sha, $salt] = $matches;
+    $verify_sha = sha1("$salt-$secret-$item");
+    if ($verify_sha == $sha) {
+        return TRUE;
+    }
     return FALSE;
-  }
-  [$dummy, $sha, $salt] = $matches;
-  $verify_sha = sha1("$salt-$secret-$item");
-  if ($verify_sha == $sha) {
-    return TRUE;
-  }
-  return FALSE;
 }

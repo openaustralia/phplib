@@ -232,7 +232,7 @@ $languages_name_to_code = [
  * Map from ISO 639-1 code to (possibly only one of) language name. */
 $languages_code_to_name = [];
 foreach ($languages_name_to_code as $languages_language => $languages_code) {
-  if (!array_key_exists($languages_code, $languages_code_to_name)) {
-    $languages_code_to_name[$languages_code] = $languages_language;
-  }
+    if (!array_key_exists($languages_code, $languages_code_to_name)) {
+        $languages_code_to_name[$languages_code] = $languages_language;
+    }
 }

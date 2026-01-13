@@ -22,11 +22,11 @@ $cli_show_warnings = TRUE;
  * by a \n.
  */
 function verbose($str) {
-  global $cli_is_verbose, $cli_program_name;
-  if (!$cli_is_verbose) {
-    return;
-  }
-  fwrite(STDERR, "$cli_program_name: $str\n");
+    global $cli_is_verbose, $cli_program_name;
+    if (!$cli_is_verbose) {
+        return;
+    }
+    fwrite(STDERR, "$cli_program_name: $str\n");
 }
 
 /**
@@ -34,11 +34,11 @@ function verbose($str) {
  * Print STRING to standard error, followed by a \n.
  */
 function warning($str) {
-  global $cli_program_name, $cli_show_warnings;
-  if (!$cli_show_warnings) {
-    return;
-  }
-  fwrite(STDERR, "$cli_program_name: $str\n");
+    global $cli_program_name, $cli_show_warnings;
+    if (!$cli_show_warnings) {
+        return;
+    }
+    fwrite(STDERR, "$cli_program_name: $str\n");
 }
 
 /**
@@ -46,7 +46,7 @@ function warning($str) {
  * Print STRING to standard error, prefixed "ERROR", followed by a \n.
  */
 function error($str) {
-  global $cli_program_name;
-  fwrite(STDERR, "$cli_program_name: ERROR: $str\n");
-  /* XXX abort at this point? */
+    global $cli_program_name;
+    fwrite(STDERR, "$cli_program_name: ERROR: $str\n");
+    /* XXX abort at this point? */
 }

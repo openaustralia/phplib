@@ -21,12 +21,12 @@ require_once 'rabx.php';
  * Return FALSE if R indicates success, or an error string otherwise.
  */
 function dadem_get_error($e) {
-  if (!rabx_is_error($e)) {
-    return FALSE;
-  }
-  else {
-    return $e->text;
-  }
+    if (!rabx_is_error($e)) {
+        return FALSE;
+    }
+    else {
+        return $e->text;
+    }
 }
 
 /**
@@ -34,13 +34,13 @@ function dadem_get_error($e) {
  * If R indicates failure, displays error message and stops procesing.
  */
 function dadem_check_error($data) {
-  if ($error_message = dadem_get_error($data)) {
-    err($error_message);
-  }
+    if ($error_message = dadem_get_error($data)) {
+        err($error_message);
+    }
 }
 
 if (defined('OPTION_DADEM_URL')) {
-  $dadem_client = new RABX_Client(OPTION_DADEM_URL,
+    $dadem_client = new RABX_Client(OPTION_DADEM_URL,
         defined('OPTION_DADEM_USERPWD') ? OPTION_DADEM_USERPWD : NULL);
 }
 
@@ -62,10 +62,10 @@ define('DADEM_CONTACT_EMAIL', 102);        /*    Means of contacting representat
  * returned.
  */
 function dadem_get_representatives($id_or_array, $all = NULL) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_representatives', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_representatives', $params);
+    return $result;
 }
 
 /**
@@ -77,10 +77,10 @@ function dadem_get_representatives($id_or_array, $all = NULL) {
  * because we haven't updated since election
  */
 function dadem_get_area_status($area_id) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_area_status', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_area_status', $params);
+    return $result;
 }
 
 /**
@@ -92,10 +92,10 @@ function dadem_get_area_status($area_id) {
  * because we haven't updated since election
  */
 function dadem_get_area_statuses() {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_area_statuses', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_area_statuses', $params);
+    return $result;
 }
 
 /**
@@ -107,10 +107,10 @@ function dadem_get_area_statuses() {
  * representatives, or in deleted representatives.
  */
 function dadem_search_representatives($query) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.search_representatives', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.search_representatives', $params);
+    return $result;
 }
 
 /**
@@ -120,10 +120,10 @@ function dadem_search_representatives($query) {
  * in the list is a hash of data about the user submitted correction.
  */
 function dadem_get_user_corrections() {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_user_corrections', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_user_corrections', $params);
+    return $result;
 }
 
 /**
@@ -137,10 +137,10 @@ function dadem_get_user_corrections() {
  * TODO: Check 'via' type as well somehow.
  */
 function dadem_get_bad_contacts() {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_bad_contacts', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_bad_contacts', $params);
+    return $result;
 }
 
 /**
@@ -174,10 +174,10 @@ function dadem_get_bad_contacts() {
  * or, on failure, an error code.
  */
 function dadem_get_representative_info($id) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_representative_info', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_representative_info', $params);
+    return $result;
 }
 
 /**
@@ -187,10 +187,10 @@ function dadem_get_representative_info($id) {
  * IDs given in ARRAY.
  */
 function dadem_get_representatives_info($array) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_representatives_info', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_representatives_info', $params);
+    return $result;
 }
 
 /**
@@ -200,10 +200,10 @@ function dadem_get_representatives_info($array) {
  * same person as PERSON_ID. Currently, this information only covers MPs.
  */
 function dadem_get_same_person($person_id) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_same_person', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_same_person', $params);
+    return $result;
 }
 
 /**
@@ -214,10 +214,10 @@ function dadem_get_same_person($person_id) {
  * new values. NOTES and EMAIL are fields the user can put extra info in.
  */
 function dadem_store_user_correction($va_id, $rep_id, $change, $name, $party, $notes, $email) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.store_user_correction', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.store_user_correction', $params);
+    return $result;
 }
 
 /**
@@ -236,10 +236,10 @@ function dadem_store_user_correction($va_id, $rep_id, $change, $name, $party, $n
  * Number of areas for which representative information is stored.
  */
 function dadem_admin_get_stats() {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.admin_get_stats', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.admin_get_stats', $params);
+    return $result;
 }
 
 /**
@@ -249,10 +249,10 @@ function dadem_admin_get_stats() {
  * information about changes to that representative's contact info.
  */
 function dadem_get_representative_history($id) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_representative_history', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_representative_history', $params);
+    return $result;
 }
 
 /**
@@ -263,10 +263,10 @@ function dadem_get_representative_history($id) {
  * representative's contact info.
  */
 function dadem_get_representatives_history($id) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.get_representatives_history', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.get_representatives_history', $params);
+    return $result;
 }
 
 /**
@@ -284,10 +284,10 @@ function dadem_get_representatives_history($id) {
  * the new id.
  */
 function dadem_admin_edit_representative($id, $details, $editor, $note) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.admin_edit_representative', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.admin_edit_representative', $params);
+    return $result;
 }
 
 /**
@@ -296,10 +296,10 @@ function dadem_admin_edit_representative($id, $details, $editor, $note) {
  * Marks user correction ID as having been dealt with.
  */
 function dadem_admin_done_user_correction($id) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.admin_done_user_correction', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.admin_done_user_correction', $params);
+    return $result;
 }
 
 /**
@@ -313,10 +313,10 @@ function dadem_admin_done_user_correction($id) {
  * of the representatives details.
  */
 function dadem_admin_mark_failing_contact($id, $method, $x, $editor, $comment) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.admin_mark_failing_contact', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.admin_mark_failing_contact', $params);
+    return $result;
 }
 
 /**
@@ -326,10 +326,10 @@ function dadem_admin_mark_failing_contact($id, $method, $x, $editor, $comment) {
  * any of the values described for get_area_status.
  */
 function dadem_admin_set_area_status($area_id, $new_status) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.admin_set_area_status', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.admin_set_area_status', $params);
+    return $result;
 }
 
 /**
@@ -338,10 +338,10 @@ function dadem_admin_set_area_status($area_id, $new_status) {
  * Returns how many councils are not in the made-live state.
  */
 function dadem_admin_get_raw_council_status() {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.admin_get_raw_council_status', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.admin_get_raw_council_status', $params);
+    return $result;
 }
 
 /**
@@ -352,10 +352,10 @@ function dadem_admin_get_raw_council_status() {
  * count, name with largest counts first.
  */
 function dadem_admin_get_diligency_council($time) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.admin_get_diligency_council', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.admin_get_diligency_council', $params);
+    return $result;
 }
 
 /**
@@ -366,8 +366,8 @@ function dadem_admin_get_diligency_council($time) {
  * name with largest counts first.
  */
 function dadem_admin_get_diligency_reps($time) {
-  global $dadem_client;
-  $params = func_get_args();
-  $result = $dadem_client->call('DaDem.admin_get_diligency_reps', $params);
-  return $result;
+    global $dadem_client;
+    $params = func_get_args();
+    $result = $dadem_client->call('DaDem.admin_get_diligency_reps', $params);
+    return $result;
 }

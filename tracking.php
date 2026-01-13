@@ -22,27 +22,27 @@ require_once 'urls.php';
  * recorded with the visit.
  */
 function track_code($extra = NULL) {
-  if (!defined('OPTION_TRACKING') || !OPTION_TRACKING) {
-    return '';
-  }
-  $salt = sprintf('%08x', rand());
-  $url = url_invoked();
-  $sign = NULL;
-  $img = NULL;
-  if (is_null($extra)) {
-    return '';
-  }
-  else {
-    $sign = sha1(OPTION_TRACKING_SECRET . "\0$salt\0$url\0$extra");
-    $img = url_new(OPTION_TRACKING_URL, FALSE,
+    if (!defined('OPTION_TRACKING') || !OPTION_TRACKING) {
+        return '';
+    }
+    $salt = sprintf('%08x', rand());
+    $url = url_invoked();
+    $sign = NULL;
+    $img = NULL;
+    if (is_null($extra)) {
+        return '';
+    }
+    else {
+        $sign = sha1(OPTION_TRACKING_SECRET . "\0$salt\0$url\0$extra");
+        $img = url_new(OPTION_TRACKING_URL, FALSE,
                   "salt", $salt,
                   "url", $url,
                   "extra", $extra,
                   "sign", $sign
               );
-  }
+    }
 
-  return '<!-- This "web bug" image is used to collect data which we use to improve our services. More on this at https://secure.mysociety.org/track/ --><img alt="" src="' . htmlspecialchars($img) . '" width="1" height="1">';
+    return '<!-- This "web bug" image is used to collect data which we use to improve our services. More on this at https://secure.mysociety.org/track/ --><img alt="" src="' . htmlspecialchars($img) . '" width="1" height="1">';
 }
 
 /**
@@ -50,5 +50,5 @@ function track_code($extra = NULL) {
  * Like track_code, above, but actually output the HTML immediately.
  */
 function track_event($extra = NULL) {
-  print track_code($extra);
+    print track_code($extra);
 }

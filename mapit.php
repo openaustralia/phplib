@@ -21,12 +21,12 @@ require_once 'rabx.php';
  * Return FALSE if R indicates success, or an error string otherwise.
  */
 function mapit_get_error($e) {
-  if (!rabx_is_error($e)) {
-    return FALSE;
-  }
-  else {
-    return $e->text;
-  }
+    if (!rabx_is_error($e)) {
+        return FALSE;
+    }
+    else {
+        return $e->text;
+    }
 }
 
 /**
@@ -34,13 +34,13 @@ function mapit_get_error($e) {
  * If R indicates failure, displays error message and stops procesing.
  */
 function mapit_check_error($data) {
-  if ($error_message = mapit_get_error($data)) {
-    err($error_message);
-  }
+    if ($error_message = mapit_get_error($data)) {
+        err($error_message);
+    }
 }
 
 if (defined('OPTION_MAPIT_URL')) {
-  $mapit_client = new RABX_Client(OPTION_MAPIT_URL,
+    $mapit_client = new RABX_Client(OPTION_MAPIT_URL,
         defined('OPTION_MAPIT_USERPWD') ? OPTION_MAPIT_USERPWD : NULL);
 }
 
@@ -54,10 +54,10 @@ define('MAPIT_AREA_NOT_FOUND', 2003);        /*    The area ID refers to a non-e
  * Return current MaPit data generation.
  */
 function mapit_get_generation() {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_generation', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_generation', $params);
+    return $result;
 }
 
 /**
@@ -66,10 +66,10 @@ function mapit_get_generation() {
  * Return voting area IDs for POSTCODE.
  */
 function mapit_get_voting_areas($postcode) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_voting_areas', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_voting_areas', $params);
+    return $result;
 }
 
 /**
@@ -100,10 +100,10 @@ function mapit_get_voting_areas($postcode) {
  * be used and the current active generation.
  */
 function mapit_get_voting_area_info($area) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_voting_area_info', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_voting_area_info', $params);
+    return $result;
 }
 
 /**
@@ -113,10 +113,10 @@ function mapit_get_voting_area_info($area) {
  * of hashes.
  */
 function mapit_get_voting_areas_info($ary) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_voting_areas_info', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_voting_areas_info', $params);
+    return $result;
 }
 
 /**
@@ -127,10 +127,10 @@ function mapit_get_voting_areas_info($ary) {
  * only return areas of those type(s).
  */
 function mapit_get_voting_area_by_name($name, $type = NULL) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_voting_area_by_name', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_voting_area_by_name', $params);
+    return $result;
 }
 
 /**
@@ -163,10 +163,10 @@ function mapit_get_voting_area_by_name($name, $type = NULL) {
  * Northern Ireland constituencies an empty hash will be returned.
  */
 function mapit_get_voting_area_geometry($area, $polygon_type = NULL) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_voting_area_geometry', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_voting_area_geometry', $params);
+    return $result;
 }
 
 /**
@@ -176,10 +176,10 @@ function mapit_get_voting_area_geometry($area, $polygon_type = NULL) {
  * array of hashes.
  */
 function mapit_get_voting_areas_geometry($ary, $polygon_type = NULL) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_voting_areas_geometry', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_voting_areas_geometry', $params);
+    return $result;
 }
 
 /**
@@ -198,10 +198,10 @@ function mapit_get_voting_areas_geometry($ary, $polygon_type = NULL) {
  * Westminster Constituencies only.
  */
 function mapit_get_voting_areas_by_location($coordinate, $method, $types = NULL, $generation = NULL) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_voting_areas_by_location', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_voting_areas_by_location', $params);
+    return $result;
 }
 
 /**
@@ -213,10 +213,10 @@ function mapit_get_voting_areas_by_location($coordinate, $method, $types = NULL,
  * generations.
  */
 function mapit_get_areas_by_type($type, $all = NULL) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_areas_by_type', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_areas_by_type', $params);
+    return $result;
 }
 
 /**
@@ -225,10 +225,10 @@ function mapit_get_areas_by_type($type, $all = NULL) {
  * Given an area ID, returns one postcode that maps to it.
  */
 function mapit_get_example_postcode($id) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_example_postcode', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_example_postcode', $params);
+    return $result;
 }
 
 /**
@@ -239,10 +239,10 @@ function mapit_get_example_postcode($id) {
  * parameter as get_areas_by_type
  */
 function mapit_get_voting_area_children($id) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_voting_area_children', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_voting_area_children', $params);
+    return $result;
 }
 
 /**
@@ -273,10 +273,10 @@ function mapit_get_voting_area_children($id) {
  * decimal degrees, north- and east-positive.
  */
 function mapit_get_location($postcode, $partial = NULL) {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.get_location', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.get_location', $params);
+    return $result;
 }
 
 /**
@@ -286,8 +286,8 @@ function mapit_get_location($postcode, $partial = NULL) {
  * postcodes is very slow).
  */
 function mapit_admin_get_stats() {
-  global $mapit_client;
-  $params = func_get_args();
-  $result = $mapit_client->call('MaPit.admin_get_stats', $params);
-  return $result;
+    global $mapit_client;
+    $params = func_get_args();
+    $result = $mapit_client->call('MaPit.admin_get_stats', $params);
+    return $result;
 }
