@@ -10,6 +10,8 @@
  *
  */
 
+namespace Oaf\Phplib\Sparkline;
+
 require_once('Sparkline.php');
 
 class Sparkline_Line extends Sparkline {
@@ -274,6 +276,5 @@ class Sparkline_Line extends Sparkline {
                               $this->imageHandle);
     }
   } // function RenderResampled
-} // class Sparkline_Line
 
-?>
+} // class Sparkline_Line
