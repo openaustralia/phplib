@@ -18,22 +18,22 @@
  * only if it is not the default (i.e. 80 for HTTP and 443 for HTTPS).
  */
 function url_invoked() {
-  $url = 'http';
-  $ssl = FALSE;
-  if (array_key_exists('SSL', $_SERVER)) {
-    $url .= "s";
-    $ssl = TRUE;
-  }
-  $url .= "://" . $_SERVER['HTTP_HOST'];
+    $url = 'http';
+    $ssl = FALSE;
+    if (array_key_exists('SSL', $_SERVER)) {
+        $url .= "s";
+        $ssl = TRUE;
+    }
+    $url .= "://" . $_SERVER['HTTP_HOST'];
 
-  if ((!$ssl && $_SERVER['SERVER_PORT'] != 80)
+    if ((!$ssl && $_SERVER['SERVER_PORT'] != 80)
         || ($ssl && $_SERVER['SERVER_PORT'] != 443)) {
-    $url .= ":" . $_SERVER['SERVER_PORT'];
-  }
+        $url .= ":" . $_SERVER['SERVER_PORT'];
+    }
 
-  $url .= preg_replace("/\?.*/", "", $_SERVER['REQUEST_URI']);
+    $url .= preg_replace("/\?.*/", "", $_SERVER['REQUEST_URI']);
 
-  return $url;
+    return $url;
 }
 
 /**
@@ -47,46 +47,46 @@ function url_invoked() {
  * this page was invoked is used.
  */
 function url_new($page, $retain) {
-  if (!isset($page)) {
-    $page = url_invoked();
-  }
-  $url = "$page";
-
-  $params = [];
-  if ($retain) {
-    /* GET takes priority over POST. This isn't the usual behaviour but is
-     * consistent with other bits of the code (see fyr/phplib/forms.php) */
-    $params = array_merge($_POST, $_GET);
-  }
-
-  if (func_num_args() > 2) {
-    if ((func_num_args() % 2) != 0) {
-      die("call to url_new with odd number of arguments");
+    if (!isset($page)) {
+        $page = url_invoked();
     }
-    for ($i = 2; $i < func_num_args(); $i += 2) {
-      $k = func_get_arg($i);
-      $v = func_get_arg($i + 1);
-      if (array_key_exists($k, $params)) {
-        unset($params[$k]);
-      }
-      $params[func_get_arg($i)] = func_get_arg($i + 1);
-    }
-  }
+    $url = "$page";
 
-  if (count($params) > 0) {
-    $keyvalpairs = [];
-    foreach ($params as $key => $val) {
-      if (is_array($val)) {
-        for ($i = 0; $i < count($val); ++$i) {
-          $keyvalpairs[] = urlencode($key) . '=' . urlencode($val[$i]);
+    $params = [];
+    if ($retain) {
+        /* GET takes priority over POST. This isn't the usual behaviour but is
+         * consistent with other bits of the code (see fyr/phplib/forms.php) */
+        $params = array_merge($_POST, $_GET);
+    }
+
+    if (func_num_args() > 2) {
+        if ((func_num_args() % 2) != 0) {
+            die("call to url_new with odd number of arguments");
         }
-      }
-      elseif ($val) {
-        $keyvalpairs[] = urlencode($key) . '=' . urlencode($val);
-      }
+        for ($i = 2; $i < func_num_args(); $i += 2) {
+            $k = func_get_arg($i);
+            $v = func_get_arg($i + 1);
+            if (array_key_exists($k, $params)) {
+                unset($params[$k]);
+            }
+            $params[func_get_arg($i)] = func_get_arg($i + 1);
+        }
     }
-    $url .= '?' . implode('&', $keyvalpairs);
-  }
 
-  return $url;
+    if (count($params) > 0) {
+        $keyvalpairs = [];
+        foreach ($params as $key => $val) {
+            if (is_array($val)) {
+                for ($i = 0; $i < count($val); ++$i) {
+                    $keyvalpairs[] = urlencode($key) . '=' . urlencode($val[$i]);
+                }
+            }
+            elseif ($val) {
+                $keyvalpairs[] = urlencode($key) . '=' . urlencode($val);
+            }
+        }
+        $url .= '?' . implode('&', $keyvalpairs);
+    }
+
+    return $url;
 }

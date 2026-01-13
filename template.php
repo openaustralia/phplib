@@ -26,18 +26,18 @@ $real_template_name = NULL;
  * calls to this function are given preference in template searching.
  */
 function template_set_style($style_dir, $additional = FALSE) {
-  global $template_style_dir;
-  /* This is just a convenience check -- obviously the directory could be
-   * removed or replaced with a file before the files within it are read. */
-  if (!file_exists($style_dir) || !is_dir($style_dir)) {
-    err("style directory \"$style_dir\" doesn't exist or isn't a directory");
-  }
-  if ($additional) {
-    array_unshift($template_style_dir, $style_dir);
-  }
-  else {
-    $template_style_dir = [$style_dir];
-  }
+    global $template_style_dir;
+    /* This is just a convenience check -- obviously the directory could be
+     * removed or replaced with a file before the files within it are read. */
+    if (!file_exists($style_dir) || !is_dir($style_dir)) {
+        err("style directory \"$style_dir\" doesn't exist or isn't a directory");
+    }
+    if ($additional) {
+        array_unshift($template_style_dir, $style_dir);
+    }
+    else {
+        $template_style_dir = [$style_dir];
+    }
 }
 
 /**
@@ -49,35 +49,35 @@ function template_set_style($style_dir, $additional = FALSE) {
  * standard output.
  */
 function template_draw($template_name, $values = NULL) {
-  global $template_style_dir, $real_template_name;
-  if (!isset($template_style_dir)) {
-    err("no template style directory set");
-  }
+    global $template_style_dir, $real_template_name;
+    if (!isset($template_style_dir)) {
+        err("no template style directory set");
+    }
 
-  /* Convenience check, again. */
-  $found = FALSE;
-  foreach ($template_style_dir as $dir) {
-    if (file_exists("$dir/$template_name.html")) {
-      $real_template_name = $template_name;
-      require "$dir/$template_name.html";
-      $found = TRUE;
-      break;
+    /* Convenience check, again. */
+    $found = FALSE;
+    foreach ($template_style_dir as $dir) {
+        if (file_exists("$dir/$template_name.html")) {
+            $real_template_name = $template_name;
+            require "$dir/$template_name.html";
+            $found = TRUE;
+            break;
+        }
+        elseif (file_exists("$dir/$template_name.php")) {
+            require "$dir/$template_name.php";
+            $found = TRUE;
+            break;
+        }
+        elseif (file_exists("$dir/$template_name.xml")) {
+            require "$dir/$template_name.xml";
+            $found = TRUE;
+            break;
+        }
     }
-    elseif (file_exists("$dir/$template_name.php")) {
-      require "$dir/$template_name.php";
-      $found = TRUE;
-      break;
+    if (!$found) {
+        header('HTTP/1.0 404 Not Found');
+        err("template file for \"$template_name\" does not exist");
     }
-    elseif (file_exists("$dir/$template_name.xml")) {
-      require "$dir/$template_name.xml";
-      $found = TRUE;
-      break;
-    }
-  }
-  if (!$found) {
-    header('HTTP/1.0 404 Not Found');
-    err("template file for \"$template_name\" does not exist");
-  }
 }
 
 /**
@@ -86,16 +86,16 @@ function template_draw($template_name, $values = NULL) {
  * using the output buffering mechanism and returned.
  */
 function template_string($template_name, $values = NULL) {
-  global $template_style_dir;
-  if (!isset($template_style_dir)) {
-    err("no template style directory set");
-  }
+    global $template_style_dir;
+    if (!isset($template_style_dir)) {
+        err("no template style directory set");
+    }
 
-  ob_start();
-  template_draw($template_name, $values);
-  $ret = ob_get_contents();
-  ob_end_clean();
-  return $ret;
+    ob_start();
+    template_draw($template_name, $values);
+    $ret = ob_get_contents();
+    ob_end_clean();
+    return $ret;
 }
 
 /**
@@ -106,12 +106,12 @@ function template_string($template_name, $values = NULL) {
  * the message to standard output rather than exiting.
  */
 function template_show_error($message) {
-  global $template_style_dir;
-  if (!isset($template_style_dir) || !file_exists(end($template_style_dir) . '/error-general.html')) {
-    print $message;
-  }
-  else {/* Not safe. */
-    template_draw("error-general", ["error_message" => $message]);
-  }
-  exit(1);
+    global $template_style_dir;
+    if (!isset($template_style_dir) || !file_exists(end($template_style_dir) . '/error-general.html')) {
+        print $message;
+    }
+    else {/* Not safe. */
+        template_draw("error-general", ["error_message" => $message]);
+    }
+    exit(1);
 }

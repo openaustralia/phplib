@@ -32,194 +32,194 @@ Maybe put all the functions in an (effectively singleton) object like $q in CGI.
  * Prints an HTMLString, can construct one wth format parameters.
  */
 function print_html() {
-  $args = func_get_args();
-  $hs = new HTMLString($args);
-  print $hs->html;
+    $args = func_get_args();
+    $hs = new HTMLString($args);
+    print $hs->html;
 }
 
 /**
  * Constructs HTMLString, with format parameters passed through.
  */
 function html($text) {
-  $args = func_get_args();
-  return new HTMLString($args);
+    $args = func_get_args();
+    return new HTMLString($args);
 }
 
 /**
  * Constructs HTMLString wrapped in tag opening and closing.
  */
 function htmlstring_tag($tag, $args) {
-  $hs = new HTMLString($args);
-  $hs->html = "<$tag>" . $hs->html . "</$tag>";
-  return $hs;
+    $hs = new HTMLString($args);
+    $hs->html = "<$tag>" . $hs->html . "</$tag>";
+    return $hs;
 }
 
 /**
  * Standard HTML tags.
  */
 function p() {
-  $args = func_get_args();
-  return htmlstring_tag("p", $args);
+    $args = func_get_args();
+    return htmlstring_tag("p", $args);
 }
 
 /**
  *
  */
 function h1() {
-  $args = func_get_args();
-  return htmlstring_tag("h1", $args);
+    $args = func_get_args();
+    return htmlstring_tag("h1", $args);
 }
 
 /**
  *
  */
 function h2() {
-  $args = func_get_args();
-  return htmlstring_tag("h2", $args);
+    $args = func_get_args();
+    return htmlstring_tag("h2", $args);
 }
 
 /**
  *
  */
 function h3() {
-  $args = func_get_args();
-  return htmlstring_tag("h3", $args);
+    $args = func_get_args();
+    return htmlstring_tag("h3", $args);
 }
 
 /**
  *
  */
 function h4() {
-  $args = func_get_args();
-  return htmlstring_tag("h4", $args);
+    $args = func_get_args();
+    return htmlstring_tag("h4", $args);
 }
 
 /**
  *
  */
 function strong() {
-  $args = func_get_args();
-  return htmlstring_tag("strong", $args);
+    $args = func_get_args();
+    return htmlstring_tag("strong", $args);
 }
 
 /**
  *
  */
 function em() {
-  $args = func_get_args();
-  return htmlstring_tag("em", $args);
+    $args = func_get_args();
+    return htmlstring_tag("em", $args);
 }
 
 /**
  *
  */
 function dt() {
-  $args = func_get_args();
-  return htmlstring_tag("dt", $args);
+    $args = func_get_args();
+    return htmlstring_tag("dt", $args);
 }
 
 /**
  *
  */
 function dd() {
-  $args = func_get_args();
-  return htmlstring_tag("dd", $args);
+    $args = func_get_args();
+    return htmlstring_tag("dd", $args);
 }
 
 /**
  *
  */
 function ul() {
-  $args = func_get_args();
-  return htmlstring_tag("ul", $args);
+    $args = func_get_args();
+    return htmlstring_tag("ul", $args);
 }
 
 /**
  *
  */
 function ol() {
-  $args = func_get_args();
-  return htmlstring_tag("ol", $args);
+    $args = func_get_args();
+    return htmlstring_tag("ol", $args);
 }
 
 /**
  *
  */
 function li() {
-  $args = func_get_args();
-  return htmlstring_tag("li", $args);
+    $args = func_get_args();
+    return htmlstring_tag("li", $args);
 }
 
 /**
  * Indicates a format specifier.
  */
 function format($text) {
-  return new HTMLString_FormatSpecifier($text);
+    return new HTMLString_FormatSpecifier($text);
 }
 
 /**
  * Type for a string containing HTML.
  */
 class HTMLString {
-  public $html;
+    public $html;
 
-  /**
-   *
-   */
-  public function __construct($args = []) {
-    if (is_a($args[0], "HTMLString_FormatSpecifier")) {
-      $format = array_shift($args);
-      // Sprintf constructor.
-      $new_args = [];
-      foreach ($args as $arg) {
-        if (gettype($arg) == "string") {
-          $arg = htmlspecialchars($arg);
-        }
-        elseif (gettype($arg) == "integer") {
-        }
-        // Do nothing.
-        elseif (gettype($arg) == "double") {
-        }
-        // Do nothing.
-        elseif (is_a($arg, "HTMLString")) {
-          $arg = $arg->html;
+    /**
+     *
+     */
+    public function __construct($args = []) {
+        if (is_a($args[0], "HTMLString_FormatSpecifier")) {
+            $format = array_shift($args);
+            // Sprintf constructor.
+            $new_args = [];
+            foreach ($args as $arg) {
+                if (gettype($arg) == "string") {
+                    $arg = htmlspecialchars($arg);
+                }
+                elseif (gettype($arg) == "integer") {
+                }
+                // Do nothing.
+                elseif (gettype($arg) == "double") {
+                }
+                // Do nothing.
+                elseif (is_a($arg, "HTMLString")) {
+                    $arg = $arg->html;
+                }
+                else {
+                    trigger_error("HTMLString formatting does not know type " . gettype($arg), E_USER_ERROR);
+                }
+                $new_args[] = $arg;
+            }
+            $this->html = vsprintf(htmlspecialchars($format->text), $new_args);
         }
         else {
-          trigger_error("HTMLString formatting does not know type " . gettype($arg), E_USER_ERROR);
+            // Appending constructor
+            // (appends all parametrs, can be strings or HTMLStrings)
+            foreach ($args as $arg) {
+                if (is_a($arg, "HTMLString")) {
+                    $this->html .= $arg->html;
+                }
+                elseif (gettype($arg) == "string") {
+                    $this->html .= htmlspecialchars($arg);
+                }
+                else {
+                    trigger_error("Appending constructor takes HTMLString and string only, not " . gettype($arg), E_USER_ERROR);
+                }
+            }
         }
-        $new_args[] = $arg;
-      }
-      $this->html = vsprintf(htmlspecialchars($format->text), $new_args);
     }
-    else {
-      // Appending constructor
-      // (appends all parametrs, can be strings or HTMLStrings)
-      foreach ($args as $arg) {
-        if (is_a($arg, "HTMLString")) {
-          $this->html .= $arg->html;
-        }
-        elseif (gettype($arg) == "string") {
-          $this->html .= htmlspecialchars($arg);
-        }
-        else {
-          trigger_error("Appending constructor takes HTMLString and string only, not " . gettype($arg), E_USER_ERROR);
-        }
-      }
-    }
-  }
 
-  /**
-   *
-   */
-  public function append($a) {
-    if (gettype($a) == "string") {
-      $a = new HTMLString($a);
+    /**
+     *
+     */
+    public function append($a) {
+        if (gettype($a) == "string") {
+            $a = new HTMLString($a);
+        }
+        if (!is_a($a, "HTMLString")) {
+            trigger_error("HTMLString.append expects an HTMLString, not " . get_class($a), E_USER_ERROR);
+        }
+        $this->html .= $a->html;
     }
-    if (!is_a($a, "HTMLString")) {
-      trigger_error("HTMLString.append expects an HTMLString, not " . get_class($a), E_USER_ERROR);
-    }
-    $this->html .= $a->html;
-  }
 
 }
 
@@ -227,13 +227,13 @@ class HTMLString {
  * Type to indicate a printf style format specifier.
  */
 class HTMLString_FormatSpecifier {
-  public $text;
+    public $text;
 
-  /**
-   *
-   */
-  public function __construct($a) {
-    $this->text = $a;
-  }
+    /**
+     *
+     */
+    public function __construct($a) {
+        $this->text = $a;
+    }
 
 }

@@ -27,7 +27,7 @@
  * applied to each element of that array.
  */
 function unfck($v) {
-  return is_array($v) ? array_map('unfck', $v) : stripslashes($v);
+    return is_array($v) ? array_map('unfck', $v) : stripslashes($v);
 }
 
 /**
@@ -36,16 +36,16 @@ function unfck($v) {
  * COOKIE arrays, in place.
  */
 function unfck_gpc() {
-  foreach (['POST', 'GET', 'REQUEST', 'COOKIE'] as $gpc) {
-    $GLOBALS["_$gpc"] = array_map('unfck', $GLOBALS["_$gpc"]);
-  }
+    foreach (['POST', 'GET', 'REQUEST', 'COOKIE'] as $gpc) {
+        $GLOBALS["_$gpc"] = array_map('unfck', $GLOBALS["_$gpc"]);
+    }
 }
 
 /* If magic_quotes_gpc is ON (in which case values in the global GET, POST and
  * COOKIE arrays will have been "escaped" by arbitrary insertion of
  * backslashes), try to undo this. */
 if (get_magic_quotes_gpc()) {
-  unfck_gpc();
+    unfck_gpc();
 }
 
 /* Make some vague effort to turn off the "magic quotes" nonsense. */
@@ -69,11 +69,11 @@ require_once 'validate.php';
  * capitalise it.  Then put back in a space in the right place.
  */
 function canonicalise_postcode($pc) {
-  $pc = str_replace(' ', '', $pc);
-  $pc = trim($pc);
-  $pc = strtoupper($pc);
-  $pc = preg_replace('#(\d[A-Z]{2})#', ' $1', $pc);
-  return $pc;
+    $pc = str_replace(' ', '', $pc);
+    $pc = trim($pc);
+    $pc = strtoupper($pc);
+    $pc = preg_replace('#(\d[A-Z]{2})#', ' $1', $pc);
+    return $pc;
 }
 
 /**
@@ -82,19 +82,19 @@ function canonicalise_postcode($pc) {
  * spaces and capitalise it.  Then put back in a space in the right place.
  */
 function canonicalise_partial_postcode($pc) {
-  $pc = str_replace(' ', '', $pc);
-  $pc = trim($pc);
-  $pc = strtoupper($pc);
-  if (validate_postcode($pc)) {
-    $pc = preg_replace('#(\d[A-Z]{2})#', '', $pc);
-  }
-  elseif (validate_partial_postcode($pc)) {
-    // OK.
-  }
-  else {
-    err('Unexpected not full or partial postcode');
-  }
-  return $pc;
+    $pc = str_replace(' ', '', $pc);
+    $pc = trim($pc);
+    $pc = strtoupper($pc);
+    if (validate_postcode($pc)) {
+        $pc = preg_replace('#(\d[A-Z]{2})#', '', $pc);
+    }
+    elseif (validate_partial_postcode($pc)) {
+        // OK.
+    }
+    else {
+        err('Unexpected not full or partial postcode');
+    }
+    return $pc;
 }
 
 /**
@@ -103,8 +103,8 @@ function canonicalise_partial_postcode($pc) {
  * replaced by single spaces, and other HTML tags have been removed.
  */
 function strip_tags_tospaces($text) {
-  $text = preg_replace("#\<(p|br|div|td|tr|th|table)[^>]*\>#i", " ", $text);
-  return strip_tags(trim($text));
+    $text = preg_replace("#\<(p|br|div|td|tr|th|table)[^>]*\>#i", " ", $text);
+    return strip_tags(trim($text));
 }
 
 /**
@@ -121,49 +121,49 @@ function strip_tags_tospaces($text) {
  * line-wrapping.
  */
 function trim_characters($text, $start, $length) {
-  $text = strip_tags_tospaces($text);
+    $text = strip_tags_tospaces($text);
 
-  // Split long strings up so they don't go too long.
-  // Mainly for URLs which are displayed, but aren't links when trimmed.
-  // http://bugs.php.net/bug.php?id=42298 for why I'm having to repeat
-  // \S 60 times...
-  $text = rtrim(preg_replace('/' . str_repeat('\S', 60) . '/u', '$0 ', $text));
+    // Split long strings up so they don't go too long.
+    // Mainly for URLs which are displayed, but aren't links when trimmed.
+    // http://bugs.php.net/bug.php?id=42298 for why I'm having to repeat
+    // \S 60 times...
+    $text = rtrim(preg_replace('/' . str_repeat('\S', 60) . '/u', '$0 ', $text));
 
-  // Otherwise the word boundary matching goes odd...
-  $text = preg_replace("/[\n\r]/", " ", $text);
+    // Otherwise the word boundary matching goes odd...
+    $text = preg_replace("/[\n\r]/", " ", $text);
 
-  // Trim start.
-  if ($start > 0) {
-    $text = substr($text, $start);
+    // Trim start.
+    if ($start > 0) {
+        $text = substr($text, $start);
 
-    // Word boundary.
-    if (preg_match("/.+?\b(.*)/", $text, $matches)) {
-      $text = $matches[1];
-      // Strip spare space at the start.
-      $text = ltrim($text);
+        // Word boundary.
+        if (preg_match("/.+?\b(.*)/", $text, $matches)) {
+            $text = $matches[1];
+            // Strip spare space at the start.
+            $text = ltrim($text);
+        }
+        $text = '...' . $text;
     }
-    $text = '...' . $text;
-  }
 
-  // Trim end.
-  if (mb_strlen($text) > $length) {
+    // Trim end.
+    if (mb_strlen($text) > $length) {
 
-    // Allow space for ellipsis.
-    $text = mb_substr($text, 0, $length - 3, 'utf-8');
+        // Allow space for ellipsis.
+        $text = mb_substr($text, 0, $length - 3, 'utf-8');
 
-    // Word boundary.
-    if (preg_match("/(.*)\b.+/u", $text, $matches)) {
-      $text = $matches[1];
-      // Strip spare space at the end.
-      $text = rtrim($text);
+        // Word boundary.
+        if (preg_match("/(.*)\b.+/u", $text, $matches)) {
+            $text = $matches[1];
+            // Strip spare space at the end.
+            $text = rtrim($text);
+        }
+        // We don't want to use the HTML entity for an ellipsis (&#8230;), because then
+        // it screws up when we subsequently use htmlentities() to print the returned
+        // string!
+        $text .= '...';
     }
-    // We don't want to use the HTML entity for an ellipsis (&#8230;), because then
-    // it screws up when we subsequently use htmlentities() to print the returned
-    // string!
-    $text .= '...';
-  }
 
-  return $text;
+    return $text;
 }
 
 /* XXX should these two go in urls.php? */
@@ -174,14 +174,14 @@ function trim_characters($text, $start, $length) {
  * text is shortened to just the first part of the URL.
  */
 function trim_url($url) {
-  $short_url = $url;
-  $url_bits = parse_url($url);
-  if (array_key_exists('path', $url_bits) && array_key_exists('scheme', $url_bits) && array_key_exists('host', $url_bits)) {
-    if ($url != "" && ($url_bits['path'] != '/' || array_key_exists('query', $url_bits))) {
-      $short_url = $url_bits['scheme'] . "://" . $url_bits['host'] . "/...";
+    $short_url = $url;
+    $url_bits = parse_url($url);
+    if (array_key_exists('path', $url_bits) && array_key_exists('scheme', $url_bits) && array_key_exists('host', $url_bits)) {
+        if ($url != "" && ($url_bits['path'] != '/' || array_key_exists('query', $url_bits))) {
+            $short_url = $url_bits['scheme'] . "://" . $url_bits['host'] . "/...";
+        }
     }
-  }
-  return "<a href=\"" . htmlspecialchars($url) . "\">" . htmlspecialchars($short_url) . "</a>";
+    return "<a href=\"" . htmlspecialchars($url) . "\">" . htmlspecialchars($short_url) . "</a>";
 }
 
 /**
@@ -189,13 +189,13 @@ function trim_url($url) {
  * Returns the domain formatted as a link to the URL.
  */
 function trim_url_to_domain($url) {
-  $short_url = $url;
-  $url_bits = parse_url($url);
-  if (array_key_exists('path', $url_bits) && array_key_exists('scheme', $url_bits) && array_key_exists('host', $url_bits)) {
-    $short_url = $url_bits['host'];
-  }
-  $short_url = str_replace("www.", "", $short_url);
-  return "<a href=\"" . htmlspecialchars($url) . "\">" . htmlspecialchars($short_url) . "</a>";
+    $short_url = $url;
+    $url_bits = parse_url($url);
+    if (array_key_exists('path', $url_bits) && array_key_exists('scheme', $url_bits) && array_key_exists('host', $url_bits)) {
+        $short_url = $url_bits['host'];
+    }
+    $short_url = str_replace("www.", "", $short_url);
+    return "<a href=\"" . htmlspecialchars($url) . "\">" . htmlspecialchars($short_url) . "</a>";
 }
 
 /**
@@ -204,8 +204,8 @@ function trim_url_to_domain($url) {
  * "\r\n") have been converted to UNIX-style line-endings (LF, "\n").
  */
 function convert_to_unix_newlines($text) {
-  $text = preg_replace("/(\r\n|\n|\r)/s", "\n", $text);
-  return $text;
+    $text = preg_replace("/(\r\n|\n|\r)/s", "\n", $text);
+    return $text;
 }
 
 /**
@@ -220,36 +220,36 @@ function convert_to_unix_newlines($text) {
  *
  */
 function get_http_var($name, $default = '') {
-  global $lang;
+    global $lang;
 
-  if (is_bool($default)) {
-    $allow_changes = TRUE;
-    $default = '';
-  }
-  else {
-    $allow_changes = FALSE;
-  }
+    if (is_bool($default)) {
+        $allow_changes = TRUE;
+        $default = '';
+    }
+    else {
+        $allow_changes = FALSE;
+    }
 
-  if (array_key_exists($name, $_GET)) {
-    $var = $_GET[$name];
-    if (!is_array($var)) {
-      $var = trim($var);
+    if (array_key_exists($name, $_GET)) {
+        $var = $_GET[$name];
+        if (!is_array($var)) {
+            $var = trim($var);
+        }
     }
-  }
-  elseif (array_key_exists($name, $_POST)) {
-    $var = $_POST[$name];
-    if (!is_array($var)) {
-      $var = trim($var);
+    elseif (array_key_exists($name, $_POST)) {
+        $var = $_POST[$name];
+        if (!is_array($var)) {
+            $var = trim($var);
+        }
     }
-  }
-  else {
-    $var = $default;
-  }
-  if ($allow_changes && $lang == 'eo') {
-    $var = input_esperanto($var);
-  }
-  $var = str_replace("\r", '', $var);
-  return $var;
+    else {
+        $var = $default;
+    }
+    if ($allow_changes && $lang == 'eo') {
+        $var = input_esperanto($var);
+    }
+    $var = str_replace("\r", '', $var);
+    return $var;
 }
 
 $eo_search = ['/C[Xx]/', '/c[Xx]/',
@@ -273,15 +273,15 @@ $eo_search2 = array_map(create_function('$a', 'return "/$a/";'), $eo_replace);
  *
  */
 function input_esperanto($text) {
-  global $eo_search, $eo_replace, $eo_search2, $eo_replace2;
-  $text = preg_replace($eo_search, $eo_replace, $text);
-  $search = ["#https?://[^\s<>{}()]+[^\s.,<>{}()]#ie",
+    global $eo_search, $eo_replace, $eo_search2, $eo_replace2;
+    $text = preg_replace($eo_search, $eo_replace, $text);
+    $search = ["#https?://[^\s<>{}()]+[^\s.,<>{}()]#ie",
                     "#\swww\.[a-z0-9\-]+(?:\.[a-z0-9\-\~]+)+(?:/[^ <>{}()\n\r]*[^., <>{}()\n\r])?#ie",
                     "#\s[a-z0-9\-_.]+@[^,< \n\r]*[^.,< \n\r]#ie"
 ];
-  $text = preg_replace($search, 'preg_replace($eo_search2, $eo_replace2, "$0");', " $text ");
-  $text = trim($text);
-  return $text;
+    $text = preg_replace($search, 'preg_replace($eo_search2, $eo_replace2, "$0");', " $text ");
+    $text = trim($text);
+    return $text;
 }
 
 /**
@@ -290,13 +290,13 @@ function input_esperanto($text) {
  * if it's there, otherwise WORD catenated with "s".
  */
 function make_plural($number, $singular, $plural = '') {
-  if ($number == 1) {
-    return $singular;
-  }
-  if ($plural) {
-    return $plural;
-  }
-  return $singular . 's';
+    if ($number == 1) {
+        return $singular;
+    }
+    if ($plural) {
+        return $plural;
+    }
+    return $singular . 's';
 }
 
 /**
@@ -305,7 +305,7 @@ function make_plural($number, $singular, $plural = '') {
  * input element of the given FORM (id) and ELEMENT (name).
  */
 function javascript_focus_set($form, $elt) {
-  return "document.$form.$elt.focus();";
+    return "document.$form.$elt.focus();";
 }
 
 /**
@@ -314,8 +314,8 @@ function javascript_focus_set($form, $elt) {
  * expression.
  */
 function check_is_valid_regexp($regex) {
-  $result = preg_match("/" . str_replace("/", "\/", $regex) . "/", "");
-  return ($result !== FALSE);
+    $result = preg_match("/" . str_replace("/", "\/", $regex) . "/", "");
+    return ($result !== FALSE);
 }
 
 /**
@@ -324,14 +324,14 @@ function check_is_valid_regexp($regex) {
  * XXX should this not return null?
  */
 function http_auth_user() {
-  $editor = NULL;
-  if (array_key_exists("REMOTE_USER", $_SERVER)) {
-    $editor = $_SERVER["REMOTE_USER"];
-  }
-  if (!$editor) {
-    $editor = "*unknown*";
-  }
-  return $editor;
+    $editor = NULL;
+    if (array_key_exists("REMOTE_USER", $_SERVER)) {
+        $editor = $_SERVER["REMOTE_USER"];
+    }
+    if (!$editor) {
+        $editor = "*unknown*";
+    }
+    return $editor;
 }
 
 /**
@@ -341,7 +341,7 @@ function http_auth_user() {
  * browsers.
  */
 function add_tooltip($text, $tip) {
-  return "<span title=\"" . htmlspecialchars($tip) . "\">$text</span>";
+    return "<span title=\"" . htmlspecialchars($tip) . "\">$text</span>";
 }
 
 /**
@@ -349,8 +349,8 @@ function add_tooltip($text, $tip) {
  * Converts all consecutive spaces, including newlines, into one space each.
  */
 function merge_spaces($text) {
-  $text = preg_replace("/\s+/s", " ", $text);
-  return $text;
+    $text = preg_replace("/\s+/s", " ", $text);
+    return $text;
 }
 
 /* ms_make_clickable TEXT NOFOLLOW
@@ -361,36 +361,36 @@ function merge_spaces($text) {
  * Taken from WordPress, tweaked slightly to work with , and . at end of some URLs.
  */
 function ms_make_clickable($ret, $params = []) {
-  $nofollow = array_key_exists('nofollow', $params) && $params['nofollow'] == TRUE;
-  $contract = array_key_exists('contract', $params) && $params['contract'] == TRUE;
-  $ret = ' ' . $ret . ' ';
-  $ret = preg_replace("#(https?)://([^\s<>{}()]+[^\s.,<>{}()])#i", "<a href='$1://$2'" .
+    $nofollow = array_key_exists('nofollow', $params) && $params['nofollow'] == TRUE;
+    $contract = array_key_exists('contract', $params) && $params['contract'] == TRUE;
+    $ret = ' ' . $ret . ' ';
+    $ret = preg_replace("#(https?)://([^\s<>{}()]+[^\s.,<>{}()])#i", "<a href='$1://$2'" .
                 ($nofollow ? " rel='nofollow'" : "") . ">$1://$2</a>", $ret);
-  $ret = preg_replace("#(\s)www\.([a-z0-9\-]+)((?:\.[a-z0-9\-\~]+)+)((?:/[^ <>{}()\n\r]*[^., <>{}()\n\r])?)#i",
+    $ret = preg_replace("#(\s)www\.([a-z0-9\-]+)((?:\.[a-z0-9\-\~]+)+)((?:/[^ <>{}()\n\r]*[^., <>{}()\n\r])?)#i",
                 "$1<a href='http://www.$2$3$4'" . ($nofollow ? " rel='nofollow'" : "") . ">www.$2$3$4</a>", $ret);
-  if ($contract) {
-    $ret = preg_replace("#(<a href='[^']*'(?: rel='nofollow')?>)([^<]{40})[^<]{3,}</a>#", '$1$2...</a>', $ret);
-  }
-  $ret = preg_replace("#(\s)([a-z0-9\-_.]+)@([^,< \n\r]*[^.,< \n\r])#i", "$1<a href=\"mailto:$2@$3\">$2@$3</a>", $ret);
-  $ret = trim($ret);
-  return $ret;
+    if ($contract) {
+        $ret = preg_replace("#(<a href='[^']*'(?: rel='nofollow')?>)([^<]{40})[^<]{3,}</a>#", '$1$2...</a>', $ret);
+    }
+    $ret = preg_replace("#(\s)([a-z0-9\-_.]+)@([^,< \n\r]*[^.,< \n\r])#i", "$1<a href=\"mailto:$2@$3\">$2@$3</a>", $ret);
+    $ret = trim($ret);
+    return $ret;
 }
 
 /**
  *
  */
 function ordinal($cardinal) {
-  global $locale_current;
-  switch ($locale_current) {
-    case 'eo':
-      return $cardinal . '-a';
+    global $locale_current;
+    switch ($locale_current) {
+        case 'eo':
+          return $cardinal . '-a';
 
-    case 'nl':
-      return $cardinal . 'e';
+        case 'nl':
+          return $cardinal . 'e';
 
-    default:
-      return english_ordinal($cardinal);
-  }
+        default:
+          return english_ordinal($cardinal);
+    }
 }
 
 /**
@@ -398,24 +398,24 @@ function ordinal($cardinal) {
  * Taken from make_ranking in TWFY codebase.
  */
 function english_ordinal($cardinal) {
-  // 11th, 12th, 13th use "th" not "st", "nd", "rd"
-  if (floor(($cardinal % 100) / 10) == 1) {
+    // 11th, 12th, 13th use "th" not "st", "nd", "rd"
+    if (floor(($cardinal % 100) / 10) == 1) {
+        return $cardinal . "th";
+    }
+    // 1st
+    if ($cardinal % 10 == 1) {
+        return $cardinal . "st";
+    }
+    // 2nd
+    if ($cardinal % 10 == 2) {
+        return $cardinal . "nd";
+    }
+    // 3rd
+    if ($cardinal % 10 == 3) {
+        return $cardinal . "rd";
+    }
+    // Everything else use th.
     return $cardinal . "th";
-  }
-  // 1st
-  if ($cardinal % 10 == 1) {
-    return $cardinal . "st";
-  }
-  // 2nd
-  if ($cardinal % 10 == 2) {
-    return $cardinal . "nd";
-  }
-  // 3rd
-  if ($cardinal % 10 == 3) {
-    return $cardinal . "rd";
-  }
-  // Everything else use th.
-  return $cardinal . "th";
 }
 
 /**
@@ -424,87 +424,87 @@ function english_ordinal($cardinal) {
  *
  */
 function prettify($s, $html = TRUE) {
-  global $locale_current;
+    global $locale_current;
 
-  if (preg_match('#^(\d{4})-(\d\d)-(\d\d)$#', $s, $m)) {
-    [, $y, $m, $d] = $m;
-    $e = mktime(12, 0, 0, $m, $d, $y);
-    if ($locale_current == 'en-gb') {
-      if ($html) {
-        return date('j<\s\u\p>S</\s\u\p> F Y', $e);
-      }
-      return date('jS F Y', $e);
+    if (preg_match('#^(\d{4})-(\d\d)-(\d\d)$#', $s, $m)) {
+        [, $y, $m, $d] = $m;
+        $e = mktime(12, 0, 0, $m, $d, $y);
+        if ($locale_current == 'en-gb') {
+            if ($html) {
+                return date('j<\s\u\p>S</\s\u\p> F Y', $e);
+            }
+            return date('jS F Y', $e);
+        }
+        elseif ($locale_current == 'eo') {
+            return date('\l\a j\-\a \d\e F Y', $e);
+        }
+        elseif ($locale_current == 'zh') {
+            return date('Y\&\#\2\4\1\8\0\;m\&\#\2\6\3\7\6\;d\&\#\2\6\0\8\5\;', $e);
+        }
+        return date('j F Y', $e);
     }
-    elseif ($locale_current == 'eo') {
-      return date('\l\a j\-\a \d\e F Y', $e);
+    if (preg_match('#^(\d{4})-(\d\d)-(\d\d) (\d\d:\d\d:\d\d)$#', $s, $m)) {
+        [, $y, $m, $d, $tim] = $m;
+        $e = mktime(12, 0, 0, $m, $d, $y);
+        if ($locale_current == 'en-gb') {
+            if ($html) {
+                return date('j<\s\u\p>S</\s\u\p> F Y', $e);
+            }
+            return date('jS F Y', $e);
+        }
+        return date('j F Y', $e) . " $tim";
     }
-    elseif ($locale_current == 'zh') {
-      return date('Y\&\#\2\4\1\8\0\;m\&\#\2\6\3\7\6\;d\&\#\2\6\0\8\5\;', $e);
+    if ($s > 100000000) {
+        // Assume it's an epoch.
+        if ($locale_current == 'zh') {
+            $tt = date('H:i', $s);
+            $t = time();
+            if (date('Ymd', $s) == date('Ymd', $t)) {
+                $tt = "$tt " . gettext('today');
+            }
+            else {
+                $tt = "$tt, " . date('Y\&\#\2\4\1\8\0\;\m\&\#\2\6\3\7\6\;\d\&\#\2\6\0\8\5\;', $s);
+            }
+            return $tt;
+        }
+        $tt = date('H:i', $s);
+        $t = time();
+        if (date('Ymd', $s) == date('Ymd', $t)) {
+            $tt = "$tt " . gettext('today');
+        }
+        elseif (date('U Y', $s) == date('U Y', $t)) {
+            $tt = "$tt, " . date('l', $s);
+        }
+        elseif (date('Y', $s) == date('Y', $t)) {
+            $tt = "$tt, " . date('l j F', $s);
+        }
+        else {
+            $tt = "$tt, " . date('D j F Y', $s);
+        }
+        return $tt;
     }
-    return date('j F Y', $e);
-  }
-  if (preg_match('#^(\d{4})-(\d\d)-(\d\d) (\d\d:\d\d:\d\d)$#', $s, $m)) {
-    [, $y, $m, $d, $tim] = $m;
-    $e = mktime(12, 0, 0, $m, $d, $y);
-    if ($locale_current == 'en-gb') {
-      if ($html) {
-        return date('j<\s\u\p>S</\s\u\p> F Y', $e);
-      }
-      return date('jS F Y', $e);
+    if (ctype_digit($s)) {
+        return prettify_num($s);
     }
-    return date('j F Y', $e) . " $tim";
-  }
-  if ($s > 100000000) {
-    // Assume it's an epoch.
-    if ($locale_current == 'zh') {
-      $tt = date('H:i', $s);
-      $t = time();
-      if (date('Ymd', $s) == date('Ymd', $t)) {
-        $tt = "$tt " . gettext('today');
-      }
-      else {
-        $tt = "$tt, " . date('Y\&\#\2\4\1\8\0\;\m\&\#\2\6\3\7\6\;\d\&\#\2\6\0\8\5\;', $s);
-      }
-      return $tt;
-    }
-    $tt = date('H:i', $s);
-    $t = time();
-    if (date('Ymd', $s) == date('Ymd', $t)) {
-      $tt = "$tt " . gettext('today');
-    }
-    elseif (date('U Y', $s) == date('U Y', $t)) {
-      $tt = "$tt, " . date('l', $s);
-    }
-    elseif (date('Y', $s) == date('Y', $t)) {
-      $tt = "$tt, " . date('l j F', $s);
-    }
-    else {
-      $tt = "$tt, " . date('D j F Y', $s);
-    }
-    return $tt;
-  }
-  if (ctype_digit($s)) {
-    return prettify_num($s);
-  }
-  return $s;
+    return $s;
 }
 
 /**
  *
  */
 function prettify_num($s) {
-  if (ctype_digit($s)) {
-    $locale_info = localeconv();
-    return number_format($s, 0, $locale_info['decimal_point'], $locale_info['thousands_sep']);
-  }
-  return $s;
+    if (ctype_digit($s)) {
+        $locale_info = localeconv();
+        return number_format($s, 0, $locale_info['decimal_point'], $locale_info['thousands_sep']);
+    }
+    return $s;
 }
 
 /**
  *
  */
 function spoonerise($s) {
-  return preg_replace('#^(.)(.*? )(.)#', '$3$2$1', $s);
+    return preg_replace('#^(.)(.*? )(.)#', '$3$2$1', $s);
 }
 
 /**
@@ -516,12 +516,12 @@ function spoonerise($s) {
  * almost like there is no RFC for this!
  */
 function make_web20_tags($tags) {
-  $tags = strtolower($tags);
-  $tags = preg_replace('/,/', ' ', $tags);
-  $tags = preg_replace('/\s+/', ' ', $tags);
-  $tags = trim($tags);
-  $tag_array = split(" ", $tags);
-  return $tag_array;
+    $tags = strtolower($tags);
+    $tags = preg_replace('/,/', ' ', $tags);
+    $tags = preg_replace('/\s+/', ' ', $tags);
+    $tags = trim($tags);
+    $tag_array = split(" ", $tags);
+    return $tag_array;
 }
 
 /*

@@ -19,8 +19,8 @@
 
 /* Make sure register globals is turned off */
 if (ini_get("register_globals")) {
-  print "Turn off register_globals in php.ini";
-  exit;
+    print "Turn off register_globals in php.ini";
+    exit;
 }
 
 /*
@@ -59,24 +59,24 @@ if (ini_get("register_globals")) {
  * Report the given ERROR and abort.
  */
 function err($str, $num = E_USER_ERROR) {
-  /* We can't just call trigger_error, because that will always report this
-   * function as the location where the error occured. So use debug_backtrace
-   * to construct the relevant information. */
-  $a = debug_backtrace(); /* now $a[1], if present, is the caller */
-  $i = 0;
-  if (array_key_exists(1, $a)) {
-    $i = 1;
-  }
-  if (!array_key_exists('file', $a[$i])) {
-    $a[$i]['file'] = '(unknown file)';
-  }
-  if (!array_key_exists('line', $a[$i])) {
-    $a[$i]['line'] = '(unknown line)';
-  }
-  err_global_handler($num, $str, $a[$i]['file'], $a[$i]['line'],
+    /* We can't just call trigger_error, because that will always report this
+     * function as the location where the error occured. So use debug_backtrace
+     * to construct the relevant information. */
+    $a = debug_backtrace(); /* now $a[1], if present, is the caller */
+    $i = 0;
+    if (array_key_exists(1, $a)) {
+        $i = 1;
+    }
+    if (!array_key_exists('file', $a[$i])) {
+        $a[$i]['file'] = '(unknown file)';
+    }
+    if (!array_key_exists('line', $a[$i])) {
+        $a[$i]['line'] = '(unknown line)';
+    }
+    err_global_handler($num, $str, $a[$i]['file'], $a[$i]['line'],
                         /* XXX We can't obtain the calling context AFAIK. */
                         NULL);
-  exit(1); /* NOTREACHED */
+    exit(1); /* NOTREACHED */
 }
 
 /**
@@ -85,42 +85,42 @@ function err($str, $num = E_USER_ERROR) {
  * appropriate web server error log.
  */
 function err_log_webserver($num, $str, $file, $line, $context) {
-  // Print "<pre>";
-  // print_r($context);
-  // error_log(print_r($context, TRUE));
-  // print "</pre>";.
+    // Print "<pre>";
+    // print_r($context);
+    // error_log(print_r($context, TRUE));
+    // print "</pre>";.
 
-  /* Apache (and perhaps other webservers) logs errors preceded by a tag
-   * giving the time and "severity" of the error. The time is in the format
-   * "[%a %b %d %H:%M:%S %Y]", and the "severity" is one of "[error]",
-   * "[warning]" or "[notice]". */
+    /* Apache (and perhaps other webservers) logs errors preceded by a tag
+     * giving the time and "severity" of the error. The time is in the format
+     * "[%a %b %d %H:%M:%S %Y]", and the "severity" is one of "[error]",
+     * "[warning]" or "[notice]". */
 
-  $prefix = '';
+    $prefix = '';
 
-  /* Time. */
-  /*
-  $prefix .= strftime('[%a %b %d %H:%M:%S %Y]') . " ";
-   */
-  /* Severity. */
-  /*
-  if ($num & (E_WARNING | E_CORE_WARNING | E_USER_WARNING))
-  $prefix .= '[warning]';
-  else if ($num & (E_NOTICE | E_USER_NOTICE))
-  $prefix .= '[notice]';
-  else
-  $prefix .= '[error]';
-  $prefix .= ' ';
-   */
+    /* Time. */
+    /*
+    $prefix .= strftime('[%a %b %d %H:%M:%S %Y]') . " ";
+     */
+    /* Severity. */
+    /*
+    if ($num & (E_WARNING | E_CORE_WARNING | E_USER_WARNING))
+    $prefix .= '[warning]';
+    else if ($num & (E_NOTICE | E_USER_NOTICE))
+    $prefix .= '[notice]';
+    else
+    $prefix .= '[error]';
+    $prefix .= ' ';
+     */
 
-  /* File/line of error. */
-  $prefix .= "$file:$line: ";
+    /* File/line of error. */
+    $prefix .= "$file:$line: ";
 
-  foreach (explode("\n", $str) as $line) {
-    /* We have to use error_log here because printing to php://stderr is
-     * broken in both FastCGI and the mod_php implementations. See
-     * http://bugs.php.net/bug.php?id=31472 for the FCGI case. */
-    error_log($prefix . $line);
-  }
+    foreach (explode("\n", $str) as $line) {
+        /* We have to use error_log here because printing to php://stderr is
+         * broken in both FastCGI and the mod_php implementations. See
+         * http://bugs.php.net/bug.php?id=31472 for the FCGI case. */
+        error_log($prefix . $line);
+    }
 }
 
 $err_handler_log = 'err_log_webserver';
@@ -133,27 +133,27 @@ $err_handling_error = FALSE;
  * Handler for all categories of errors.
  */
 function err_global_handler($num, $str, $file, $line, $context) {
-  global $err_handler_log;
-  global $err_handler_display;
-  global $err_handling_error;
+    global $err_handler_log;
+    global $err_handler_display;
+    global $err_handling_error;
 
-  // PHP5.1RC* a bit overzealous about strict errors, even if not set to display:
-  if (version_compare(phpversion(), "5.0") >= 0 && $num == E_STRICT) {
-    return;
-  }
+    // PHP5.1RC* a bit overzealous about strict errors, even if not set to display:
+    if (version_compare(phpversion(), "5.0") >= 0 && $num == E_STRICT) {
+        return;
+    }
 
-  $err_handling_error = TRUE;
+    $err_handling_error = TRUE;
 
-  if (isset($err_handler_log) && $num != E_USER_NOTICE) {
-    $err_handler_log($num, $str, $file, $line, $context);
-  }
-  if (isset($err_handler_display)) {
-    $err_handler_display($num, $str, $file, $line, $context);
-  }
-  else {
-    $err_handler_log($num, "no error display handler set", $file, $line, $context);
-  }
-  exit(1);
+    if (isset($err_handler_log) && $num != E_USER_NOTICE) {
+        $err_handler_log($num, $str, $file, $line, $context);
+    }
+    if (isset($err_handler_display)) {
+        $err_handler_display($num, $str, $file, $line, $context);
+    }
+    else {
+        $err_handler_log($num, "no error display handler set", $file, $line, $context);
+    }
+    exit(1);
 }
 
 /**
@@ -163,11 +163,11 @@ function err_global_handler($num, $str, $file, $line, $context) {
  * error logging.
  */
 function err_set_handler_log($func) {
-  global $err_handler_log;
-  if (isset($func) && !function_exists($func)) {
-    err("err_set_log_handler: called with name of nonexistent function '$func'");
-  }
-  $err_handler_log = $func;
+    global $err_handler_log;
+    if (isset($func) && !function_exists($func)) {
+        err("err_set_log_handler: called with name of nonexistent function '$func'");
+    }
+    $err_handler_log = $func;
 }
 
 /**
@@ -177,11 +177,11 @@ function err_set_handler_log($func) {
  * off error logging.
  */
 function err_set_handler_display($func) {
-  global $err_handler_display;
-  if (isset($func) && !function_exists($func)) {
-    err("err_set_display_handler: called with name of nonexistent function '$func'");
-  }
-  $err_handler_display = $func;
+    global $err_handler_display;
+    if (isset($func) && !function_exists($func)) {
+        err("err_set_display_handler: called with name of nonexistent function '$func'");
+    }
+    $err_handler_display = $func;
 }
 
 /*

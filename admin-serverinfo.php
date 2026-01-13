@@ -13,47 +13,47 @@
  */
 class ADMIN_PAGE_SERVERINFO {
 
-  public $id;
+    public $id;
 
-  public $navname;
+    public $navname;
 
-  /**
-   *
-   */
-  public function __construct() {
-    $this->id = "serverinfo";
-    $this->navname = "Server Information";
-  }
+    /**
+     *
+     */
+    public function __construct() {
+        $this->id = "serverinfo";
+        $this->navname = "Server Information";
+    }
 
-  /**
-   *
-   */
-  public function run($command) {
-    ob_start();
-    passthru($command);
-    $ret = ob_get_contents();
-    ob_end_clean();
-    return "<tr><td><p><pre>$ret</pre></td></tr>";
-  }
+    /**
+     *
+     */
+    public function run($command) {
+        ob_start();
+        passthru($command);
+        $ret = ob_get_contents();
+        ob_end_clean();
+        return "<tr><td><p><pre>$ret</pre></td></tr>";
+    }
 
-  /**
-   *
-   */
-  public function display($self_link) {
-    $form = new HTML_QuickForm('adminServerInfoForm', 'get', $self_link);
+    /**
+     *
+     */
+    public function display($self_link) {
+        $form = new HTML_QuickForm('adminServerInfoForm', 'get', $self_link);
 
-    $form->addElement('header', '', 'System Name');
-    $form->addElement('html', $this->run("uname -a | fmt"));
-    $form->addElement('header', '', 'Time, Uptime, Logins and Load (over last 1, 5, 15 mins)');
-    $form->addElement('html', $this->run("uptime"));
-    $form->addElement('header', '', 'Disk Space');
-    $form->addElement('html', $this->run("df -h"));
-    $form->addElement('header', '', 'Recent Logins');
-    $form->addElement('html', $this->run("who"));
-    $form->addElement('header', '', 'Network Interfaces');
-    $form->addElement('html', $this->run("/sbin/ifconfig"));
+        $form->addElement('header', '', 'System Name');
+        $form->addElement('html', $this->run("uname -a | fmt"));
+        $form->addElement('header', '', 'Time, Uptime, Logins and Load (over last 1, 5, 15 mins)');
+        $form->addElement('html', $this->run("uptime"));
+        $form->addElement('header', '', 'Disk Space');
+        $form->addElement('html', $this->run("df -h"));
+        $form->addElement('header', '', 'Recent Logins');
+        $form->addElement('html', $this->run("who"));
+        $form->addElement('header', '', 'Network Interfaces');
+        $form->addElement('html', $this->run("/sbin/ifconfig"));
 
-    admin_render_form($form);
-  }
+        admin_render_form($form);
+    }
 
 }

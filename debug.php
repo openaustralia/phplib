@@ -16,15 +16,15 @@
  * Return time since the epoch, including fractional seconds. */
 if (!function_exists('getmicrotime')) {
 
-  /**
-   *
-   */
-  function getmicrotime() {
-    $mtime = microtime();
-    $mtime = explode(" ", $mtime);
-    $mtime = $mtime[1] + $mtime[0];
-    return $mtime;
-  }
+    /**
+     *
+     */
+    function getmicrotime() {
+        $mtime = microtime();
+        $mtime = explode(" ", $mtime);
+        $mtime = $mtime[1] + $mtime[0];
+        return $mtime;
+    }
 
 }
 
@@ -38,41 +38,41 @@ if (!function_exists('getmicrotime')) {
  * $levels below.
  */
 function debug($header, $text = "", $complex_variable = NULL) {
-  $debug_level = OPTION_PHP_DEBUG_LEVEL;
+    $debug_level = OPTION_PHP_DEBUG_LEVEL;
 
-  if ($debug_level != '') {
-    // Set which level shows which types of debug info.
-    $levels = [
+    if ($debug_level != '') {
+        // Set which level shows which types of debug info.
+        $levels = [
               1 => ['FRONTEND', 'WARNING', 'MAPIT', 'DADEM', 'QUEUE', 'TIMESTAMP'],
               2 => ['MAPITRESULT', 'DADEMRESULT', 'RATTY'],
               3 => ['XMLRPC', 'RABX', 'RATTYRESULT'],
               4 => ['RABXWIRE', 'SERIALIZE'],
               ];
 
-    // Store which headers we are allowed to show.
-    $allowed_headers = [];
+        // Store which headers we are allowed to show.
+        $allowed_headers = [];
 
-    if ($debug_level > count($levels)) {
-      $max_level_to_show = count($levels);
-    }
-    else {
-      $max_level_to_show = $debug_level;
-    }
+        if ($debug_level > count($levels)) {
+            $max_level_to_show = count($levels);
+        }
+        else {
+            $max_level_to_show = $debug_level;
+        }
 
-    for ($n = 1; $n <= $max_level_to_show; $n++) {
-      $allowed_headers = array_merge($allowed_headers, $levels[$n]);
-    }
+        for ($n = 1; $n <= $max_level_to_show; $n++) {
+            $allowed_headers = array_merge($allowed_headers, $levels[$n]);
+        }
 
-    // If we can show this header, then, er, show it.
-    if (in_array($header, $allowed_headers) || $debug_level >= 4) {
-      print "<p><span style=\"color:#039;\"><strong>$header</strong></span> $text";
-      if (isset($complex_variable)) {
-        print "</p><p>";
-        debug_vardump($complex_variable);
-      }
-      print "</p>\n";
+        // If we can show this header, then, er, show it.
+        if (in_array($header, $allowed_headers) || $debug_level >= 4) {
+            print "<p><span style=\"color:#039;\"><strong>$header</strong></span> $text";
+            if (isset($complex_variable)) {
+                print "</p><p>";
+                debug_vardump($complex_variable);
+            }
+            print "</p>\n";
+        }
     }
-  }
 }
 
 /**
@@ -80,13 +80,13 @@ function debug($header, $text = "", $complex_variable = NULL) {
  * Dump VARIABLE to the page, properly escaped and wrapped in <pre> tags.
  */
 function debug_vardump($blah) {
-  /* Miserable. We need to encode entities in the output, which means messing
-   * about with output buffering. */
-  ob_start();
-  var_dump($blah);
-  $d = ob_get_contents();
-  ob_end_clean();
-  print "<pre>" . htmlspecialchars($d, ENT_QUOTES, 'UTF-8') . "</pre>";
+    /* Miserable. We need to encode entities in the output, which means messing
+     * about with output buffering. */
+    ob_start();
+    var_dump($blah);
+    $d = ob_get_contents();
+    ob_end_clean();
+    print "<pre>" . htmlspecialchars($d, ENT_QUOTES, 'UTF-8') . "</pre>";
 }
 
 /* debug_timestamp
@@ -97,17 +97,17 @@ $timestamp_last = $timestamp_start = getmicrotime();
  *
  */
 function debug_timestamp($comment = FALSE, $extra = NULL) {
-  global $timestamp_last, $timestamp_start;
-  $t = getmicrotime();
-  if ($comment) {
-    printf("<!--\n   %s\n    %f seconds since start\n    %f seconds since last\n-->",
+    global $timestamp_last, $timestamp_start;
+    $t = getmicrotime();
+    if ($comment) {
+        printf("<!--\n   %s\n    %f seconds since start\n    %f seconds since last\n-->",
                 is_null($extra) ? 'TIMESTAMP' : $extra, $t - $timestamp_start, $t - $timestamp_last);
-  }
-  else {
-    debug("TIMESTAMP", sprintf("%f seconds since start; %f seconds since last",
+    }
+    else {
+        debug("TIMESTAMP", sprintf("%f seconds since start; %f seconds since last",
                 $t - $timestamp_start, $t - $timestamp_last));
-  }
-  $timestamp_last = $t;
+    }
+    $timestamp_last = $t;
 }
 
 /**
@@ -117,5 +117,5 @@ function debug_timestamp($comment = FALSE, $extra = NULL) {
  * comment.
  */
 function debug_comment_timestamp($extra = NULL) {
-  debug_timestamp(TRUE, $extra);
+    debug_timestamp(TRUE, $extra);
 }

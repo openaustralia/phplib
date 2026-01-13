@@ -35,17 +35,17 @@
  * Return NUM bytes of (partly pseudo) random data from /dev/urandom.
  */
 function urandom_bytes($num) {
-  global $urandom_bytes_filehandle;
-  if ($num < 0) {
-    err("NUM must be nonnegative in urandom_bytes");
-  }
-  if (!isset($urandom_bytes_filehandle)
+    global $urandom_bytes_filehandle;
+    if ($num < 0) {
+        err("NUM must be nonnegative in urandom_bytes");
+    }
+    if (!isset($urandom_bytes_filehandle)
         && !($urandom_bytes_filehandle = fopen("/dev/urandom", "r"))) {
-    err("Unable to open /dev/urandom");
-  }
-  $res = '';
-  while (strlen($res) < $num) {
-    $res .= fread($urandom_bytes_filehandle, $num - strlen($res));
-  }
-  return $res;
+        err("Unable to open /dev/urandom");
+    }
+    $res = '';
+    while (strlen($res) < $num) {
+        $res .= fread($urandom_bytes_filehandle, $num - strlen($res));
+    }
+    return $res;
 }
