@@ -356,7 +356,7 @@ function rabx_return_string_parse(&$string) {
         return $v;
     }
     elseif ($v != 0) {
-        return rabx_error(RABX_ERROR_PROTOCOL, "unknown protocol version \"$ver\"");
+        return rabx_error(RABX_ERROR_PROTOCOL, "unknown protocol version \"$v\"");
     }
 
     if ($t == "S") {
@@ -381,52 +381,18 @@ function rabx_return_string_parse(&$string) {
 }
 
 /**
- * rabx_serialise DATA
- * Return a serialised copy of DATA in the RABX format.
- */
-function rabx_serialise(&$x) {
-    $ser = '';
-    rabx_wire_wr($x, $ser);
-    return $ser;
-}
-
-/**
- * rabx_unserialise DATA
- * Parse DATA as RABX wire-format, and return the corresponding data, or a
- * RABX_Error on error.
- */
-function rabx_unserialise(&$x) {
-    $offset = 0;
-    $r = rabx_wire_rd($x, $offset);
-    /* XXX hack! serialize/unserialize probably aren't safe, so we shouldn't
-     * use them; but for compatibility during transition, try calling
-     * unserialize on any data which don't parse properly here. But we should
-     * remove this as soon as there are no old serialize-format data sitting
-     * in tables. */
-    if (rabx_is_error($r) && $r2 = unserialize($x)) {
-        return $r2;
-    }
-    else {
-        return $r;
-    }
-}
-
-/**
  *
  * Implementation of client.
  *
  */
-function microtime_float() {
-    [$usec, $sec] = explode(" ", microtime());
-    return ((float) $usec + (float) $sec);
-}
 
 /**
  *
  */
 class RABX_Client {
-    public $ch = FALSE;
+    public \CurlHandle|false $ch = FALSE;
     public $url = FALSE;
+    public $userpwd = NULL;
     public $use_post = FALSE;
     public $lastt;
 
@@ -465,8 +431,9 @@ class RABX_Client {
         }
 
         $c = urlencode($callstr);
+        $u = $this->url . "?$c";
         $post = $this->use_post || $force_post;
-        if (!$post and strlen($u = $this->url . "?$c") > 1024) {
+        if (!$post and strlen($u) > 1024) {
             $post = TRUE;
         }
 
