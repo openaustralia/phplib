@@ -2,7 +2,7 @@
     "name": "openaustralia/twfy",
     "description": "Web Application component for Open Australia (phplib module)",
     "type": "project",
-    "license": "BSD-3-Clause",
+    "license": "AGPL-3.0-or-later",
     "minimum-stability": "stable",
     "require": {
         "php": "^8.3.0"
