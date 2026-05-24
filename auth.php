@@ -1,4 +1,5 @@
 <?php
+// Directly included by TWFY.
 
 /**
  * @file
