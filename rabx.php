@@ -1,5 +1,9 @@
 <?php
-// Directly included by TWFY.
+
+/**
+ * @file
+ * Directly included by TWFY.
+ */
 
 /**
  * @file
