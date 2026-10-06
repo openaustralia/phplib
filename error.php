@@ -60,7 +60,7 @@ if (ini_get("register_globals")) {
  */
 function err($str, $num = E_USER_ERROR) {
     /* We can't just call trigger_error, because that will always report this
-     * function as the location where the error occured. So use debug_backtrace
+     * function as the location where the error occurred. So use debug_backtrace
      * to construct the relevant information. */
     $a = debug_backtrace(); /* now $a[1], if present, is the caller */
     $i = 0;
