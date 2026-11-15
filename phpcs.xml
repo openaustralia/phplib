@@ -36,5 +36,4 @@
   <!-- Exclude third part stuff for now -->
   <exclude-pattern>./facebookphp4/*</exclude-pattern>
   <exclude-pattern>./simplexml44-0_4_4/*</exclude-pattern>
-  <exclude-pattern>./sparkline/*</exclude-pattern>
 </ruleset>

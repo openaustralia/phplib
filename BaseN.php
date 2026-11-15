@@ -14,14 +14,11 @@
  */
 
 $std_alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-$std_alpha_key = [];
-for ($i = 0; $i < strlen($std_alpha); ++$i) {
-    $std_alpha_key[substr($std_alpha, $i, 1)] = $i;
-}
 
 /**
  * basen_blocksize N
  * Return the block size for the pseudo-base-N encoding.
+ * Used by: basen_encodefast() in this file.
  */
 function basen_blocksize($n) {
     $blocksize = 0;
@@ -34,7 +31,9 @@ function basen_blocksize($n) {
 }
 
 /**
- *
+ * basen_encodefast N MESSAGE
+ * Encode MESSAGE in the pseudo-base-N encoding.
+ * Used by: auth_ab64_encode() in auth.php.
  */
 function basen_encodefast($n, $message) {
     global $std_alpha;
@@ -90,53 +89,6 @@ function basen_encodefast($n, $message) {
         }
 
         $res .= strrev($r);
-    }
-
-    return $res;
-}
-
-/**
- *
- */
-function basen_decodefast($n, $message) {
-    global $std_alpha_key;
-    if (!preg_match('/^[1-9]\d*$/', $n)) {
-        die("N must be a positive integer");
-    }
-    if (!isset($message)) {
-        die("MESSAGE may not be undef");
-    }
-
-    $blocksize = basen_blocksize($n);
-
-    $res = '';
-    $l = strlen($message);
-    for ($i = 0; $i < $l; $i += $blocksize) {
-        $nin = ($l - $i > $blocksize) ? $blocksize : $l - $i;
-        $nout = 4;
-        if ($nin < $blocksize) {
-            $nout -= $blocksize - $nin;
-            if ($nout < 0) {
-                return NULL;
-            }
-        }
-
-        $val = 0;
-        for ($j = 0; $j < $nin; ++$j) {
-            $val *= $n;
-            $c = substr($message, $i + $j, 1);
-            if (!array_key_exists($c, $std_alpha_key)) {
-                return NULL;
-            }
-            $val += $std_alpha_key[$c];
-        }
-
-        $r = pack('N', $val);
-        if ($nout < 4) {
-            $r = substr($r, 4 - $nout, $nout);
-        }
-
-        $res .= $r;
     }
 
     return $res;

@@ -91,6 +91,7 @@ class RABX_Error_User extends RABX_Error {
  * rabx_error CODE TEXT [EXTRA]
  * Return a suitable object representing the error with the given CODE,
  * descriptive TEXT, and optional EXTRA data.
+ * Used by: the other rabx functions in this file.
  */
 function rabx_error($code, $text, $extra = NULL) {
     if ($code >= RABX_ERROR_USER) {
@@ -114,6 +115,7 @@ function rabx_error($code, $text, $extra = NULL) {
 /**
  * rabx_is_error E
  * Does E represent an RABX error?
+ * Used by: the other rabx functions in this file.
  */
 function rabx_is_error($e) {
     if (is_object($e) and is_a($e, "RABX_Error")) {
@@ -132,6 +134,7 @@ function rabx_is_error($e) {
  * rabx_netstring_wr STRING BUFFER
  * Append STRING to BUFFER, formatted as a netstring. Returns true on success
  * or an error on failure.
+ * Used by: rabx_wire_wr() and rabx_call_string() in this file.
  */
 function rabx_netstring_wr(&$string, &$buffer) {
     $l = setlocale(LC_NUMERIC, "0");
@@ -145,6 +148,7 @@ function rabx_netstring_wr(&$string, &$buffer) {
  * rabx_netstring_rd BUFFER POS
  * Read a netstring from BUFFER starting at position POS. Returns the string
  * read on success, or an error on failure.
+ * Used by: rabx_wire_rd() and rabx_return_string_parse() in this file.
  */
 function rabx_netstring_rd(&$buffer, &$pos) {
     $avail = strlen($buffer) - $pos;
@@ -180,6 +184,8 @@ function rabx_netstring_rd(&$buffer, &$pos) {
  * rabx_wire_wr X BUFFER
  * Append the on-the-wire representation of X to BUFFER. Returns true on
  * success or an error on failure.
+ * Used by: api_output_rabx() in twfy's www/docs/api/api_functions.php, and by
+ * rabx_call_string() in this file.
  */
 function rabx_wire_wr(&$x, &$buffer) {
     if (is_object($x)) {
@@ -251,6 +257,7 @@ function rabx_wire_wr(&$x, &$buffer) {
  * rabx_wire_rd BUFFER POS
  * Read the on-the-wire representation of some data from BUFFER beginning at
  * position POS. On error, returns an error.
+ * Used by: rabx_return_string_parse() in this file.
  */
 function rabx_wire_rd(&$buffer, &$pos) {
     if ($pos >= strlen($buffer)) {
@@ -332,6 +339,7 @@ function rabx_wire_rd(&$buffer, &$pos) {
  * rabx_call_string FUNCTION ARGS
  * Return the on-the-wire data for a call to the named FUNCTION with the
  * given ARGS.
+ * Used by: RABX_Client::call() in this file.
  */
 function rabx_call_string($function, &$args) {
     $str = 'R';
@@ -346,6 +354,7 @@ function rabx_call_string($function, &$args) {
  * rabx_return_string_parse STRING
  * Parse a function return out of STRING, returning corresponding PHP data
  * structures, or a RABX_Error on error.
+ * Used by: RABX_Client::call() in this file.
  */
 function rabx_return_string_parse(&$string) {
     $t = substr($string, 0, 1);
@@ -391,7 +400,9 @@ function rabx_return_string_parse(&$string) {
  */
 
 /**
- *
+ * RABX_Client
+ * Client for calling functions on a RABX server.
+ * Used by: mapit.php, which creates one only when OPTION_MAPIT_URL is defined.
  */
 class RABX_Client {
     public \CurlHandle|false $ch = FALSE;
