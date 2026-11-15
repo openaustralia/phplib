@@ -13,7 +13,9 @@
  */
 
 /* getmicrotime
- * Return time since the epoch, including fractional seconds. */
+ * Return time since the epoch, including fractional seconds.
+ * Used by: nothing in phplib. This is a fallback, as twfy's
+ * www/includes/utility.php defines the same function. */
 if (!function_exists('getmicrotime')) {
 
     /**
@@ -36,6 +38,8 @@ if (!function_exists('getmicrotime')) {
  * also dumped to the page. Display of items is dependent on the integer value
  * of the debug query variable and the passed HEADER, according to the table in
  * $levels below.
+ * Used by: RABX_Client::call() in rabx.php. twfy loads this file only through
+ * rabx.php, and only RABX_Client calls it.
  */
 function debug($header, $text = "", $complex_variable = NULL) {
     $debug_level = OPTION_PHP_DEBUG_LEVEL;
@@ -78,6 +82,7 @@ function debug($header, $text = "", $complex_variable = NULL) {
 /**
  * debug_vardump VARIABLE
  * Dump VARIABLE to the page, properly escaped and wrapped in <pre> tags.
+ * Used by: debug() in this file.
  */
 function debug_vardump($blah) {
     /* Miserable. We need to encode entities in the output, which means messing
@@ -87,35 +92,4 @@ function debug_vardump($blah) {
     $d = ob_get_contents();
     ob_end_clean();
     print "<pre>" . htmlspecialchars($d, ENT_QUOTES, 'UTF-8') . "</pre>";
-}
-
-/* debug_timestamp
- * Output a timestamp since the page was started. */
-$timestamp_last = $timestamp_start = getmicrotime();
-
-/**
- *
- */
-function debug_timestamp($comment = FALSE, $extra = NULL) {
-    global $timestamp_last, $timestamp_start;
-    $t = getmicrotime();
-    if ($comment) {
-        printf("<!--\n   %s\n    %f seconds since start\n    %f seconds since last\n-->",
-                is_null($extra) ? 'TIMESTAMP' : $extra, $t - $timestamp_start, $t - $timestamp_last);
-    }
-    else {
-        debug("TIMESTAMP", sprintf("%f seconds since start; %f seconds since last",
-                $t - $timestamp_start, $t - $timestamp_last));
-    }
-    $timestamp_last = $t;
-}
-
-/**
- * debug_comment_timestamp [NOTE]
- * As debug_timestamp, but print the timestamp in an HTML comment, whether or
- * not the debug flags are set. If specified, NOTE will be printed in the
- * comment.
- */
-function debug_comment_timestamp($extra = NULL) {
-    debug_timestamp(TRUE, $extra);
 }

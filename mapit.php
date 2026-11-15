@@ -31,6 +31,8 @@ if (defined('OPTION_MAPIT_URL')) {
  *
  * As get_voting_area_info, only takes an array of ids, and returns an array
  * of hashes.
+ * Used by: twfy's www/docs/api/api_getGeometry.php, which runs only when
+ * OPTION_MAPIT_URL is set.
  */
 function mapit_get_voting_areas_info($ary) {
     global $mapit_client;
@@ -44,6 +46,8 @@ function mapit_get_voting_areas_info($ary) {
  *
  * As get_voting_area_geometry, only takes an array of ids, and returns an
  * array of hashes.
+ * Used by: twfy's www/docs/api/api_getGeometry.php, which runs only when
+ * OPTION_MAPIT_URL is set.
  */
 function mapit_get_voting_areas_geometry($ary, $polygon_type = NULL) {
     global $mapit_client;
@@ -59,6 +63,8 @@ function mapit_get_voting_areas_geometry($ary, $polygon_type = NULL) {
  * three letter code such as WMC. By default only gets active areas in
  * current generation, if ALL is true then gets all areas for all
  * generations.
+ * Used by: twfy's www/docs/api/api_getGeometry.php, which runs only when
+ * OPTION_MAPIT_URL is set.
  */
 function mapit_get_areas_by_type($type, $all = NULL) {
     global $mapit_client;

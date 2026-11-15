@@ -25,7 +25,7 @@ require_once dirname(__FILE__) . '/BaseN.php';
  * auth_ab64_encode DATA
  * Return an encoding of DATA, using email-client-friendly characters;
  * specifically the encoded data match /^[0-9A-Za-z]+$/) excluding O0I1l.
- *
+ * Used by: twfy's www/docs/api/key.php, to make API keys.
  */
 function auth_ab64_encode($i) {
     $t = basen_encodefast(57, $i);
@@ -38,6 +38,8 @@ function auth_ab64_encode($i) {
  * Verifies that the ITEM has been correctly signed with SIGNATURE.  The signer
  * must also have had SECRET and will have called auth_sign_with_shared_secret
  * to make the SIGNATURE.
+ * Used by: twfy's www/docs/alert/index.php and www/docs/alert/authed.php, to
+ * check the signed email address in alert links.
  */
 function auth_verify_with_shared_secret($item, $secret, $signature) {
     if (!preg_match('#^([0-9a-f]+)-([0-9a-f]+)$#', $signature, $matches)) {

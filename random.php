@@ -33,6 +33,7 @@
 /**
  * urandom_bytes NUM
  * Return NUM bytes of (partly pseudo) random data from /dev/urandom.
+ * Used by: twfy's www/docs/api/key.php, to make API keys.
  */
 function urandom_bytes($num) {
     global $urandom_bytes_filehandle;
