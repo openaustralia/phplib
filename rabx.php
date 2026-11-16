@@ -21,8 +21,6 @@
  *
  */
 
-require_once dirname(__FILE__) . '/debug.php';
-
 /*
  * Errors and error codes.
  */
@@ -134,7 +132,7 @@ function rabx_is_error($e) {
  * rabx_netstring_wr STRING BUFFER
  * Append STRING to BUFFER, formatted as a netstring. Returns true on success
  * or an error on failure.
- * Used by: rabx_wire_wr() and rabx_call_string() in this file.
+ * Used by: rabx_wire_wr() in this file.
  */
 function rabx_netstring_wr(&$string, &$buffer) {
     $l = setlocale(LC_NUMERIC, "0");
@@ -145,47 +143,10 @@ function rabx_netstring_wr(&$string, &$buffer) {
 }
 
 /**
- * rabx_netstring_rd BUFFER POS
- * Read a netstring from BUFFER starting at position POS. Returns the string
- * read on success, or an error on failure.
- * Used by: rabx_wire_rd() and rabx_return_string_parse() in this file.
- */
-function rabx_netstring_rd(&$buffer, &$pos) {
-    $avail = strlen($buffer) - $pos;
-    if ($avail < 3) {
-        return rabx_error(RABX_ERROR_PROTOCOL, "not enough space for a netstring at position $pos");
-    }
-    $m = [];
-    if (!preg_match('/(\d+):/', $buffer, $m, 0, $pos)) {
-        return rabx_error(RABX_ERROR_PROTOCOL, "bad netstring leader at position $pos");
-    }
-    $len = $m[1];
-    $pos += ($n = strlen($m[0]));
-    $avail -= $n;
-
-    if ($avail < $len + 1) {
-        return rabx_error(RABX_ERROR_PROTOCOL, "not enough space for netstring payload at position $pos");
-    }
-
-    $res = substr($buffer, $pos, $len);
-    $pos += $len;
-
-    if (substr($buffer, $pos, 1) != ",") {
-        return rabx_error(RABX_ERROR_PROTOCOL, "no trailing \",\" after netstring at position $pos");
-    }
-
-    ++$pos;
-    --$avail;
-
-    return $res;
-}
-
-/**
  * rabx_wire_wr X BUFFER
  * Append the on-the-wire representation of X to BUFFER. Returns true on
  * success or an error on failure.
- * Used by: api_output_rabx() in twfy's www/docs/api/api_functions.php, and by
- * rabx_call_string() in this file.
+ * Used by: api_output_rabx() in twfy's www/docs/api/api_functions.php.
  */
 function rabx_wire_wr(&$x, &$buffer) {
     if (is_object($x)) {
@@ -251,237 +212,4 @@ function rabx_wire_wr(&$x, &$buffer) {
             $buffer .= 'T';     /* XXX should check for UTF-8 */
         }    return rabx_netstring_wr($x, $buffer);
     }
-}
-
-/**
- * rabx_wire_rd BUFFER POS
- * Read the on-the-wire representation of some data from BUFFER beginning at
- * position POS. On error, returns an error.
- * Used by: rabx_return_string_parse() in this file.
- */
-function rabx_wire_rd(&$buffer, &$pos) {
-    if ($pos >= strlen($buffer)) {
-        return rabx_error(RABX_ERROR_PROTOCOL, "attempt to read beyond end of buffer at position $pos");
-    }
-    $type = substr($buffer, $pos, 1);
-    ++$pos;
-
-    /* Check for valid type. */
-    if (!strstr("NIRTBLA", $type)) {
-        return rabx_error(RABX_ERROR_PROTOCOL, "bad type character \"$type\" at position $pos");
-    }
-
-    /* Null value. */
-    if ($type == 'N') {
-        return NULL;
-    }
-
-    /* All other types now encode a string, which is either the value or a
-     * length. */
-    if (rabx_is_error($x = rabx_netstring_rd($buffer, $pos))) {
-        return $x;
-    }
-    if ($type == 'I') {
-        if (!is_numeric($x)) {
-            return rabx_error(RABX_ERROR_PROTOCOL, "integer value is not numeric at position $pos");
-        }
-        // Cast like this instead of intval, so makes overflows into doubles.
-        return $x + 0;
-    }
-    elseif ($type == 'R') {
-        if (!is_numeric($x)) {
-            return rabx_error(RABX_ERROR_PROTOCOL, "real value is not numeric at position $pos");
-        }
-        return floatval($x);
-    }
-    elseif ($type == 'T') {/* XXX UTF-8 */
-        return $x;
-        // Raw binary.
-    }
-    elseif ($type == 'B') {
-        return $x;
-    }
-    elseif ($type == 'L') {
-        if (intval($x) != $x) {
-            return rabx_error(RABX_ERROR_PROTOCOL, "list length is not an integer at position $pos");
-        }
-        $a = [];
-        for ($i = 0; $i < intval($x); ++$i) {
-            array_push($a, $e = rabx_wire_rd($buffer, $pos));
-            if (rabx_is_error($e)) {
-                return $e;
-            }
-        }
-        return $a;
-    }
-    elseif ($type == 'A') {
-        if (intval($x) != $x) {
-            return rabx_error(RABX_ERROR_PROTOCOL, "associative array length is not an integer at position $pos");
-        }
-        $a = [];
-        for ($i = 0; $i < intval($x); ++$i) {
-            if (rabx_is_error($k = rabx_wire_rd($buffer, $pos))) {
-                return $k;
-            }
-            if (rabx_is_error($v = rabx_wire_rd($buffer, $pos))) {
-                return $v;
-            }
-            $a[$k] = $v;
-        }
-        return $a;
-    }
-    else {/* NOTREACHED */
-        return rabx_error(RABX_ERROR_UNKNOWN, "internal error at position $pos");
-    }
-}
-
-/**
- * rabx_call_string FUNCTION ARGS
- * Return the on-the-wire data for a call to the named FUNCTION with the
- * given ARGS.
- * Used by: RABX_Client::call() in this file.
- */
-function rabx_call_string($function, &$args) {
-    $str = 'R';
-    $ver = '0';
-    rabx_netstring_wr($ver, $str); /* 0 == version */
-    rabx_netstring_wr($function, $str); /* XXX errors */
-    rabx_wire_wr($args, $str);
-    return $str;
-}
-
-/**
- * rabx_return_string_parse STRING
- * Parse a function return out of STRING, returning corresponding PHP data
- * structures, or a RABX_Error on error.
- * Used by: RABX_Client::call() in this file.
- */
-function rabx_return_string_parse(&$string) {
-    $t = substr($string, 0, 1);
-    if (strlen($string) < 1) {
-        return rabx_error(RABX_ERROR_PROTOCOL, "return string is too short");
-    }
-    elseif (!($t == 'S' || $t == 'E')) {
-        return rabx_error(RABX_ERROR_PROTOCOL, "first byte of return string should be \"S\" or \"E\", not \"$t\"");
-    }
-    $off = 1;
-    if (rabx_is_error($v = rabx_netstring_rd($string, $off))) {
-        return $v;
-    }
-    elseif ($v != 0) {
-        return rabx_error(RABX_ERROR_PROTOCOL, "unknown protocol version \"$v\"");
-    }
-
-    if ($t == "S") {
-        return rabx_wire_rd($string, $off);
-    }
-    else {
-        if (rabx_is_error($code = rabx_netstring_rd($string, $off))) {
-            return $code;
-        }
-        elseif (rabx_is_error($text = rabx_netstring_rd($string, $off))) {
-            return $text;
-        }
-        $code = intval($code);
-        $extra = NULL;
-        if ($off < strlen($string)) {
-            if (rabx_is_error($extra = rabx_wire_rd($string, $off))) {
-                return $extra;
-            }
-        }
-        return rabx_error($code, $text, $extra);
-    }
-}
-
-/**
- *
- * Implementation of client.
- *
- */
-
-/**
- * RABX_Client
- * Client for calling functions on a RABX server.
- * Used by: mapit.php, which creates one only when OPTION_MAPIT_URL is defined.
- */
-class RABX_Client {
-    public \CurlHandle|false $ch = FALSE;
-    public $url = FALSE;
-    public $userpwd = NULL;
-    public $use_post = FALSE;
-    public $lastt;
-
-    /**
-     * constructor URL [USERPWD]
-     * Constructor; return a client that calls functions at the given URL.
-     * USERPWD is optional HTTP authentication information. It's a string
-     * formatted as "username:password".
-     */
-    public function __construct($url, $userpwd = NULL) {
-        $this->url = $url;
-        $this->ch = curl_init();
-        $this->userpwd = $userpwd;
-        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($this->ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($this->ch, CURLOPT_USERAGENT, 'PHP RABX client, version $Id: rabx.php,v 1.26 2006-09-18 12:48:18 francis Exp $');
-        if (array_key_exists('http_proxy', $_SERVER)) {
-            curl_setopt($this->ch, CURLOPT_PROXY, $_SERVER['http_proxy']);
-        }
-        $use_post = FALSE;
-    }
-
-    /**
-     * call FUNCTION ARGUMENTS [FORCEPOST]
-     * Call the named FUNCTION with the given ARGUMENTS (an array); if
-     * FORCEPOST is true, use HTTP POST even if the request would be small
-     * enough to fit in a GET.
-     */
-    public function call($function, $args, $force_post = 0) {
-        debug("RABX", "RABX calling $function via $this->url, arguments:", $args);
-
-        $callstr = rabx_call_string($function, $args);
-        debug("RABXWIRE", "RABX raw send:", $callstr);
-        if (rabx_is_error($callstr)) {
-            return $callstr;
-        }
-
-        $c = urlencode($callstr);
-        $u = $this->url . "?$c";
-        $post = $this->use_post || $force_post;
-        if (!$post and strlen($u) > 1024) {
-            $post = TRUE;
-        }
-
-        if ($post) {
-            curl_setopt($this->ch, CURLOPT_URL, $this->url);
-            curl_setopt($this->ch, CURLOPT_POST, 1);
-            curl_setopt($this->ch, CURLOPT_POSTFIELDS, $callstr);
-        }
-        else {
-            curl_setopt($this->ch, CURLOPT_URL, $u);
-            curl_setopt($this->ch, CURLOPT_HTTPGET, 1);
-            /* By default curl passes a "Pragma: no-cache" header. Turn it
-             * off. */
-            curl_setopt($this->ch, CURLOPT_HTTPHEADER, ["Pragma: "]);
-        }
-        if ($this->userpwd) {
-            curl_setopt($this->ch, CURLOPT_USERPWD, $this->userpwd);
-        }
-
-        if (!($r = curl_exec($this->ch))) {
-            return rabx_error(RABX_ERROR_TRANSPORT, curl_error($this->ch) . " calling $this->url");
-        }
-        $C = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
-        debug("RABXWIRE", "RABX raw result:", $r);
-
-        if ($C != 200) {
-            return rabx_error(RABX_ERROR_TRANSPORT, "HTTP error $C calling $this->url");
-        }
-        else {
-            $result = rabx_return_string_parse($r);
-            debug("RABX", "RABX result:", $result);
-            return $result;
-        }
-    }
-
 }
