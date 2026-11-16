@@ -6,7 +6,7 @@ this repository. `CLAUDE.md` and `.github/copilot-instructions.md` point here so
 ## What this repository is
 
 A small PHP utility library forked from mySociety's `commonlib` (`phplib/` subtree): authentication (`auth.php`),
-RABX serialisation/RPC (`rabx.php`), MapIt lookups (`mapit.php`), plus `BaseN.php`, `debug.php` and `random.php`.
+RABX serialisation (`rabx.php`), plus `BaseN.php` and `random.php`.
 PHP 8.3 (`composer.json`). Each function that remains has a "Used by:" line in its comment naming its callers.
 
 It is consumed by the sibling `twfy` app **by relative filesystem path** (`../phplib`), not as a Composer package -
@@ -28,8 +28,8 @@ There are no tests here; the only cross-repo verification is twfy's own test job
 
 ## Gotchas
 
-- **Changes here can silently break twfy.** The consuming includes are few and specific (`auth.php`, `rabx.php`,
-  `mapit.php`, `tracking.php` from twfy's `page.php`) - check twfy before renaming or changing signatures. Note
+- **Changes here can silently break twfy.** The consuming includes are few and specific (`auth.php`, `rabx.php` and
+  `tracking.php` from twfy's `page.php`) - check twfy before renaming or changing signatures. Note
   twfy requires `phplib/tracking.php`, which does not currently exist in this checkout.
 - `composer.json` declares the name `openaustralia/twfy` (a leftover collision with the twfy repo's own package
   name) and `phpcs.xml` excludes directories that no longer exist. Licence is AGPL-3.0-or-later; the README
